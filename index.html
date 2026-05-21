@@ -554,7 +554,7 @@
   <div class="api-area">
     <div class="api-dot" id="api-dot"></div>
     <div class="api-input-wrap">
-      <input type="password" id="api-key" placeholder="Gemini API Key..." oninput="checkKey()">
+      <input type="password" id="api-key" placeholder="Κωδικός πρόσβασης..." oninput="checkPassword()">
       <button class="eye-btn" onclick="toggleEye()" type="button" title="Εμφάνιση/Απόκρυψη">
         <svg id="eye-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </button>
@@ -572,8 +572,8 @@
   <div class="steps">
     <div class="step-card">
       <div class="step-num">01</div>
-      <div class="step-title">Βάλε το API Key</div>
-      <div class="step-desc">Δωρεάν από το Google AI Studio. Μένει μόνο στον browser σου.</div>
+      <div class="step-title">Βάλε τον κωδικό</div>
+      <div class="step-desc">Ο κωδικός πρόσβασης που σου έδωσε ο διαχειριστής.</div>
     </div>
     <div class="step-card">
       <div class="step-num">02</div>
@@ -678,9 +678,13 @@
     <div class="report-header">
       <div class="report-title" id="report-title">Report Διαγωνισμού</div>
       <div class="report-actions">
+        <button class="action-btn" onclick="downloadReport()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Αποθήκευση Report
+        </button>
         <button class="action-btn" onclick="sendEmail()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-          Αποστολή στο email
+          Αποστολή Email
         </button>
         <button class="action-btn" onclick="resetApp()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
@@ -701,9 +705,20 @@
   const files = { diakirixi: null, dilosi: null };
   let reportData = null;
 
-  function checkKey() {
-    const k = document.getElementById('api-key').value.trim();
-    document.getElementById('api-dot').className = 'api-dot' + (k.length > 10 ? ' ok' : '');
+  // ── ΚΩΔΙΚΟΣ → API KEY ΑΝΤΙΣΤΟΙΧΙΣΗ ──
+  // Για να αλλάξεις το key: βρες το ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY και αντικατέστησέ το με το νέο Gemini API key
+  const ACCESS = {
+    'diagonismoi2026': 'AIzaSyCzEOOWaK2ipp1Fg_V3JVykeOP5BlfIlx0'
+  };
+
+  function checkPassword() {
+    const p = document.getElementById('api-key').value.trim();
+    document.getElementById('api-dot').className = 'api-dot' + (ACCESS[p] ? ' ok' : '');
+  }
+
+  function getApiKey() {
+    const p = document.getElementById('api-key').value.trim();
+    return ACCESS[p] || null;
   }
 
   function toggleEye() {
@@ -770,11 +785,11 @@
   }
 
   async function runAnalysis() {
-    const key = document.getElementById('api-key').value.trim();
+    const key = getApiKey();
     const errWrap = document.getElementById('error-wrap');
     errWrap.innerHTML = '';
 
-    if (!key) { errWrap.innerHTML = '<div class="error-box">Βάλε πρώτα το Gemini API Key στο πάνω δεξιά πεδίο.</div>'; return; }
+    if (!key) { errWrap.innerHTML = '<div class="error-box">Λάθος κωδικός πρόσβασης. Επικοινώνησε με τον διαχειριστή.</div>'; return; }
     if (!files.diakirixi) { errWrap.innerHTML = '<div class="error-box">Ανέβασε τουλάχιστον το αρχείο της διακήρυξης.</div>'; return; }
 
     const company = document.getElementById('company-name').value.trim();
@@ -829,7 +844,14 @@ ${companyInfo}${dilosiPart}
   "simantika": ["σημαντικές παρατηρήσεις, παγίδες, ιδιαιτερότητες"]
 }
 
-Για τις υπεύθυνες δηλώσεις: σύνταξε πλήρες νομικό κείμενο που να ξεκινά με 'Ο/Η κάτωθι υπογεγραμμένος/η...' ή 'Δηλώνω υπεύθυνα...' και να περιλαμβάνει όλα τα απαραίτητα στοιχεία. Αν δεν ζητούνται υπεύθυνες δηλώσεις, βάλε κενό array.`;
+Για τις υπεύθυνες δηλώσεις: ΠΑΝΤΑ ξεκίνα με αυτό ακριβώς το standard κείμενο:
+"Με ατομική μου ευθύνη και γνωρίζοντας τις κυρώσεις (2), που προβλέπονται από τις διατάξεις της παρ. 6 του άρθρου 22 του Ν. 1599/1986, δηλώνω ότι:
+
+Ως νόμιμος εκπρόσωπος της εταιρείας [ΕΠΩΝΥΜΙΑ] δηλώνω ότι:"
+
+Αντικατέστησε το [ΕΠΩΝΥΜΙΑ] με την επωνυμία εταιρείας αν δόθηκε, αλλιώς άφησε κενό "……………".
+Μετά από αυτό το standard κείμενο, πρόσθεσε το συγκεκριμένο περιεχόμενο της δήλωσης όπως ζητείται στη διακήρυξη.
+Αν δεν ζητούνται υπεύθυνες δηλώσεις, βάλε κενό array.`;
 
       setProgress(3);
 
@@ -979,45 +1001,158 @@ ${companyInfo}${dilosiPart}
   function sendEmail() {
     if (!reportData) return;
     const d = reportData;
-    let body = `REPORT ΔΙΑΓΩΝΙΣΜΟΥ\n`;
-    body += `================\n\n`;
-    body += `Τίτλος: ${d.titlos || '—'}\n`;
-    body += `Αναθέτουσα: ${d.anatheton || '—'}\n`;
-    body += `Προϋπολογισμός: ${d.poso || '—'}${d.poso_note ? ' (' + d.poso_note + ')' : ''}\n\n`;
+    const sep = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
 
-    body += `ΣΗΜΑΝΤΙΚΕΣ ΗΜΕΡΟΜΗΝΙΕΣ\n`;
-    body += `----------------------\n`;
-    if (d.hmerominia_lixis) body += `Καταληκτική υποβολής: ${d.hmerominia_lixis}\n`;
-    if (d.hmerominia_anoigmatos) body += `Αποσφράγιση: ${d.hmerominia_anoigmatos}\n`;
+    let body = `📋 REPORT ΔΙΑΓΩΝΙΣΜΟΥ\n${sep}\n\n`;
+    body += `📌 ${d.titlos || '—'}\n`;
+    body += `🏛️  Αναθέτουσα: ${d.anatheton || '—'}\n`;
+    body += `💰 Προϋπολογισμός: ${d.poso || '—'}${d.poso_note ? ' (' + d.poso_note + ')' : ''}\n\n`;
+
+    body += `⏰ ΣΗΜΑΝΤΙΚΕΣ ΗΜΕΡΟΜΗΝΙΕΣ\n${sep}\n`;
+    if (d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ') body += `🔴 Καταληκτική υποβολής: ${d.hmerominia_lixis}\n`;
+    if (d.hmerominia_anoigmatos) body += `🟡 Αποσφράγιση: ${d.hmerominia_anoigmatos}\n`;
     if (d.alles_hmerominia && d.alles_hmerominia.length) {
-      d.alles_hmerominia.forEach(h => { body += `${h.perigrafi}: ${h.hmerominia}\n`; });
+      d.alles_hmerominia.forEach(h => { body += `🔵 ${h.perigrafi}: ${h.hmerominia}\n`; });
     }
 
-    body += `\nΔΙΚΑΙΟΛΟΓΗΤΙΚΑ\n`;
-    body += `---------------\n`;
+    body += `\n📁 ΔΙΚΑΙΟΛΟΓΗΤΙΚΑ ΣΥΜΜΕΤΟΧΗΣ\n${sep}\n`;
     if (d.dikaiologitika && d.dikaiologitika.length) {
       d.dikaiologitika.forEach((dk, i) => {
-        body += `${i+1}. [${dk.kritiko ? 'ΚΡΙΣΙΜΟ' : 'ΤΥΠΙΚΟ'}] ${dk.onoma}${dk.simeioseis ? ' — ' + dk.simeioseis : ''}\n`;
+        const icon = dk.kritiko ? '🔴' : '🔵';
+        body += `${icon} ${i+1}. ${dk.onoma}${dk.simeioseis ? '\n    ↳ ' + dk.simeioseis : ''}\n`;
       });
     }
 
     if (d.ipefthines_diloseis && d.ipefthines_diloseis.length) {
-      body += `\nΥΠΕΥΘΥΝΕΣ ΔΗΛΩΣΕΙΣ\n`;
-      body += `-------------------\n`;
+      body += `\n✍️  ΥΠΕΥΘΥΝΕΣ ΔΗΛΩΣΕΙΣ\n${sep}\n`;
       d.ipefthines_diloseis.forEach((id, i) => {
-        body += `\n[${i+1}] ${id.titlos}\n${id.keimeno}\n`;
+        body += `\n[ ${i+1} ] ${id.titlos}\n`;
+        body += `- - - - - - - - - - - - - - -\n`;
+        body += `${id.keimeno}\n`;
       });
     }
 
     if (d.simantika && d.simantika.length) {
-      body += `\nΠΑΡΑΤΗΡΗΣΕΙΣ\n`;
-      body += `-------------\n`;
+      body += `\n⚠️  ΣΗΜΑΝΤΙΚΕΣ ΠΑΡΑΤΗΡΗΣΕΙΣ\n${sep}\n`;
       d.simantika.forEach(s => { body += `• ${s}\n`; });
     }
 
-    const subject = encodeURIComponent(`Report Διαγωνισμού: ${d.titlos || 'Ανάλυση'}`);
+    body += `\n${sep}\n🤖 Παράχθηκε από Αναλυτή Δημόσιων Διαγωνισμών`;
+
+    const subject = encodeURIComponent(`📋 Report Διαγωνισμού: ${d.titlos || 'Ανάλυση'}`);
     const mailBody = encodeURIComponent(body);
     window.location.href = `mailto:?subject=${subject}&body=${mailBody}`;
+  }
+
+  function downloadReport() {
+    if (!reportData) return;
+    const d = reportData;
+    const now = new Date().toLocaleDateString('el-GR');
+
+    let docsRows = '';
+    if (d.dikaiologitika && d.dikaiologitika.length) {
+      d.dikaiologitika.forEach((dk, i) => {
+        const badge = dk.kritiko
+          ? `<span style="background:#fce8e8;color:#8b2e2e;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΚΡΙΣΙΜΟ</span>`
+          : `<span style="background:#e8eef5;color:#1e3d6b;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΤΥΠΙΚΟ</span>`;
+        docsRows += `<tr>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px">${i+1}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee">${badge}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;font-weight:500">${dk.onoma}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;color:#666">${dk.simeioseis || '—'}</td>
+        </tr>`;
+      });
+    }
+
+    let declsHTML = '';
+    if (d.ipefthines_diloseis && d.ipefthines_diloseis.length) {
+      declsHTML = `<div style="margin-top:32px">
+        <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">✍️ Υπεύθυνες Δηλώσεις</h2>`;
+      d.ipefthines_diloseis.forEach((id, i) => {
+        declsHTML += `<div style="margin-bottom:24px;border:1px solid #ddd;border-radius:10px;overflow:hidden">
+          <div style="background:#2c5f3f;color:#fff;padding:10px 16px;font-size:14px;font-weight:500">${i+1}. ${id.titlos}</div>
+          <div style="padding:16px;font-family:Georgia,serif;font-size:14px;line-height:1.9;color:#1a1816;background:#fdfcfa;white-space:pre-wrap">${id.keimeno}</div>
+        </div>`;
+      });
+      declsHTML += `</div>`;
+    }
+
+    let notesHTML = '';
+    if (d.simantika && d.simantika.length) {
+      notesHTML = `<div style="margin-top:32px;background:#fff8e8;border:1px solid #e8d5a0;border-radius:10px;padding:20px">
+        <h2 style="font-family:Georgia,serif;font-size:18px;font-weight:400;color:#7a5c1e;margin-bottom:12px">⚠️ Σημαντικές Παρατηρήσεις</h2>
+        <ul style="margin:0;padding-left:20px">`;
+      d.simantika.forEach(s => { notesHTML += `<li style="font-size:14px;color:#5a4010;margin-bottom:6px;line-height:1.6">${s}</li>`; });
+      notesHTML += `</ul></div>`;
+    }
+
+    const html = `<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Report: ${d.titlos || 'Διαγωνισμός'}</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f3ee;font-family:'Segoe UI',Arial,sans-serif">
+<div style="max-width:800px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+
+  <div style="background:#2c5f3f;padding:32px 40px;color:#fff">
+    <div style="font-size:12px;opacity:0.7;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Report Δημόσιου Διαγωνισμού • ${now}</div>
+    <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:400;line-height:1.3">${d.titlos || 'Ανάλυση Διαγωνισμού'}</h1>
+    ${d.anatheton ? `<div style="margin-top:8px;font-size:14px;opacity:0.85">🏛️ ${d.anatheton}</div>` : ''}
+  </div>
+
+  <div style="padding:32px 40px">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+      <div style="background:#f5f3ee;border-radius:10px;padding:20px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Προϋπολογισμός</div>
+        <div style="font-family:Georgia,serif;font-size:32px;color:#2c5f3f;line-height:1">${d.poso || '—'}</div>
+        ${d.poso_note ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">${d.poso_note}</div>` : ''}
+      </div>
+      <div style="background:#f5f3ee;border-radius:10px;padding:20px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Καταληκτική Ημερομηνία</div>
+        <div style="font-family:Georgia,serif;font-size:24px;color:#8b2e2e;line-height:1.2">${d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ' ? d.hmerominia_lixis : '—'}</div>
+        ${d.hmerominia_anoigmatos ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">Αποσφράγιση: ${d.hmerominia_anoigmatos}</div>` : ''}
+      </div>
+    </div>
+
+    ${d.alles_hmerominia && d.alles_hmerominia.length ? `
+    <div style="margin-bottom:32px;background:#eaf0f7;border-radius:10px;padding:16px 20px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#1e3d6b;margin-bottom:10px">Άλλες Ημερομηνίες</div>
+      ${d.alles_hmerominia.map(h => `<div style="font-size:14px;color:#1e3d6b;padding:4px 0;border-bottom:1px solid #c5d8eb"><strong>${h.perigrafi}:</strong> ${h.hmerominia}</div>`).join('')}
+    </div>` : ''}
+
+    <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">📁 Δικαιολογητικά Συμμετοχής</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:8px">
+      <thead>
+        <tr style="background:#f5f3ee">
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">#</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Τύπος</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Δικαιολογητικό</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Σημειώσεις</th>
+        </tr>
+      </thead>
+      <tbody>${docsRows}</tbody>
+    </table>
+
+    ${declsHTML}
+    ${notesHTML}
+
+    <div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#9e9a94;text-align:center">
+      Παράχθηκε από Αναλυτή Δημόσιων Διαγωνισμών • ${now}
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `report-diagonismou-${(d.titlos || 'αναλυση').substring(0,30).replace(/\s+/g,'-').toLowerCase()}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   function resetApp() {
