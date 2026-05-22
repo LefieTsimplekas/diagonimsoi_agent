@@ -1184,7 +1184,7 @@ ${companyInfo}${dilosiPart}
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `report-diagonismou-${(d.titlos || 'αναλυση').substring(0,30).replace(/\s+/g,'-').toLowerCase()}.html`;
+    a.download = `Report_${(d.anatheton || 'Αναθέτουσα').substring(0,30).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}_${(d.titlos || 'Διαγωνισμός').substring(0,40).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}.html`;
     a.click();
     URL.revokeObjectURL(url);
   }
