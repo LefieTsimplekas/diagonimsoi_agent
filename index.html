@@ -682,6 +682,10 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Αποθήκευση Report
         </button>
+        <button class="action-btn" id="sheets-btn" onclick="saveToSheets()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>
+          Αποθήκευση στο Sheets
+        </button>
         <button class="action-btn" onclick="sendEmail()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
           Αποστολή Email
@@ -705,7 +709,44 @@
   const files = { diakirixi: null, dilosi: null };
   let reportData = null;
 
-  // ── ΚΩΔΙΚΟΣ → API KEY ΑΝΤΙΣΤΟΙΧΙΣΗ ──
+  // Google Sheets Web App URL
+  const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzMFTeyNuKersmrEobiu8OceQSXTr-MJO6pygb_tKrdSqox257g0V3Zw1gIn-fsuAvKAg/exec';
+
+  async function saveToSheets() {
+    if (!reportData) return;
+    const d = reportData;
+    const btn = document.getElementById('sheets-btn');
+    btn.disabled = true;
+    btn.textContent = 'Αποθήκευση...';
+
+    const payload = {
+      titlos: d.titlos || '—',
+      anatheton: d.anatheton || '—',
+      poso: d.poso || '—',
+      hmerominia_lixis: d.hmerominia_lixis || '—',
+      dikaiologitika: d.dikaiologitika ? d.dikaiologitika.map(dk => dk.onoma).join(', ') : '—',
+      simantika: d.simantika ? d.simantika.join(' | ') : '—'
+    };
+
+    try {
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      btn.textContent = '✓ Αποθηκεύτηκε!';
+      btn.style.color = 'var(--accent-mid)';
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Αποθήκευση στο Sheets';
+        btn.style.color = '';
+      }, 3000);
+    } catch(e) {
+      btn.textContent = 'Σφάλμα — δοκίμασε ξανά';
+      btn.disabled = false;
+    }
+  }
   // Για να αλλάξεις το key: βρες το ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY και αντικατέστησέ το με το νέο Gemini API key
   const ACCESS = {
     'diagonismoi2026': 'AIzaSyCzEOOWaK2ipp1Fg_V3JVykeOP5BlfIlx0'
