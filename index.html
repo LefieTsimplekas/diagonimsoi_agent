@@ -719,7 +719,7 @@
       anatheton: d.anatheton || '—',
       poso: d.poso || '—',
       hmerominia_lixis: d.hmerominia_lixis || '—',
-      dikaiologitika: d.dikaiologitika ? d.dikaiologitika.map(dk => dk.onoma).join(', ') : '—',
+      dikaiologitika: d.dikaiologitika ? d.dikaiologitika.map((dk, i) => `${i+1}. ${dk.onoma}`).join('\n') : '—',
       simantika: d.simantika ? d.simantika.join(' | ') : '—'
     };
 
