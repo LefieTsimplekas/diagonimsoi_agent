@@ -552,13 +552,8 @@
     <span class="logo-name">Δια<em>γωνισμός</em></span>
   </div>
   <div class="api-area">
-    <div class="api-dot" id="api-dot"></div>
-    <div class="api-input-wrap">
-      <input type="password" id="api-key" placeholder="Κωδικός πρόσβασης..." oninput="checkPassword()">
-      <button class="eye-btn" onclick="toggleEye()" type="button" title="Εμφάνιση/Απόκρυψη">
-        <svg id="eye-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </button>
-    </div>
+    <div class="api-dot ok" id="api-dot"></div>
+    <span style="font-size:13px;color:var(--text-muted)">Συνδεδεμένο</span>
   </div>
 </header>
 
@@ -572,13 +567,13 @@
   <div class="steps">
     <div class="step-card">
       <div class="step-num">01</div>
-      <div class="step-title">Βάλε τον κωδικό</div>
-      <div class="step-desc">Ο κωδικός πρόσβασης που σου έδωσε ο διαχειριστής.</div>
+      <div class="step-title">Ανέβασε τα αρχεία</div>
+      <div class="step-desc">Διακήρυξη σε PDF και (προαιρετικά) template υπεύθυνης δήλωσης.</div>
     </div>
     <div class="step-card">
       <div class="step-num">02</div>
-      <div class="step-title">Ανέβασε τα αρχεία</div>
-      <div class="step-desc">Διακήρυξη σε PDF και (προαιρετικά) template υπεύθυνης δήλωσης.</div>
+      <div class="step-title">Συμπλήρωσε στοιχεία</div>
+      <div class="step-desc">Επωνυμία εταιρείας, ΑΦΜ και εκπρόσωπο για τις υπεύθυνες δηλώσεις.</div>
     </div>
     <div class="step-card">
       <div class="step-num">03</div>
@@ -749,7 +744,7 @@
   }
   // Για να αλλάξεις το key: βρες το ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY και αντικατέστησέ το με το νέο Gemini API key
   const ACCESS = {
-    'diagonismoi2026': 'AIzaSyCzEOOWaK2ipp1Fg_V3JVykeOP5BlfIlx0'
+    'diagonismoi2026': 'ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY'
   };
 
   function checkPassword() {
@@ -826,11 +821,9 @@
   }
 
   async function runAnalysis() {
-    const key = getApiKey();
     const errWrap = document.getElementById('error-wrap');
     errWrap.innerHTML = '';
 
-    if (!key) { errWrap.innerHTML = '<div class="error-box">Λάθος κωδικός πρόσβασης. Επικοινώνησε με τον διαχειριστή.</div>'; return; }
     if (!files.diakirixi) { errWrap.innerHTML = '<div class="error-box">Ανέβασε τουλάχιστον το αρχείο της διακήρυξης.</div>'; return; }
 
     const company = document.getElementById('company-name').value.trim();
@@ -902,7 +895,7 @@ ${companyInfo}${dilosiPart}
       ];
 
       const res = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${key}`,
+        'https://autumn-snow-bea1.lefteris-tsimp.workers.dev',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
