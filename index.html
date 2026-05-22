@@ -720,7 +720,7 @@
       poso: d.poso || '—',
       hmerominia_lixis: d.hmerominia_lixis || '—',
       dikaiologitika: d.dikaiologitika ? d.dikaiologitika.map((dk, i) => `${i+1}. ${dk.onoma}`).join('\n') : '—',
-      simantika: d.simantika ? d.simantika.join(' | ') : '—'
+      simantika: d.simantika ? d.simantika.map((s, i) => `${i+1}. ${s}`).join('\n') : '—'
     };
 
     try {
