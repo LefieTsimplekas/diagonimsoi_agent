@@ -636,17 +636,8 @@
         </div>
       </div>
       <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
-        <div class="section-label" style="margin-bottom:0.75rem">Κοινοποίηση Outlook Calendar (προαιρετικό)</div>
-        <div class="field-row">
-          <div class="field-group">
-            <label>Το email μου (organizer)</label>
-            <input type="email" id="organizer-email" placeholder="π.χ. lefteris@company.gr">
-          </div>
-          <div class="field-group">
-            <label>Email συναδέλφων (χωρισμένα με κόμμα)</label>
-            <input type="text" id="attendees" placeholder="π.χ. colleague@company.gr, manager@company.gr">
-          </div>
-        </div>
+        <div class="section-label" style="margin-bottom:0.5rem">Outlook Calendar</div>
+        <p style="font-size:12px;color:var(--text-faint)">Μετά την ανάλυση, κατέβασε το .ics και άνοιξέ το με διπλό κλικ για να προστεθεί στο ημερολόγιό σου.</p>
       </div>
     </div>
 
@@ -1327,14 +1318,12 @@ ${content}
           .map(email => `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${email}`)
       : [];
 
-    const method = organizerEmail && attendeeLines.length > 0 ? 'REQUEST' : 'PUBLISH';
-
     const icsLines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//DiagonismosAgent//GR',
       'CALSCALE:GREGORIAN',
-      `METHOD:${method}`,
+      'METHOD:PUBLISH',
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${now}`,
@@ -1342,8 +1331,6 @@ ${content}
       `DTEND;VALUE=DATE:${endStr}`,
       `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
       `DESCRIPTION:${desc}`,
-      ...(organizerLine ? [organizerLine] : []),
-      ...attendeeLines,
       'BEGIN:VALARM',
       'TRIGGER:-P2D',
       'ACTION:DISPLAY',
