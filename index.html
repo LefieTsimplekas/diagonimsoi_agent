@@ -1327,12 +1327,14 @@ ${content}
           .map(email => `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${email}`)
       : [];
 
+    const method = organizerEmail && attendeeLines.length > 0 ? 'REQUEST' : 'PUBLISH';
+
     const icsLines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//DiagonismosAgent//GR',
       'CALSCALE:GREGORIAN',
-      'METHOD:REQUEST',
+      `METHOD:${method}`,
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${now}`,
