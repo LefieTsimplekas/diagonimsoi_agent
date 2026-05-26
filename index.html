@@ -638,7 +638,11 @@
       <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
         <div class="section-label" style="margin-bottom:0.75rem">Κοινοποίηση Outlook Calendar (προαιρετικό)</div>
         <div class="field-row">
-          <div class="field-group" style="grid-column:1/-1">
+          <div class="field-group">
+            <label>Το email μου (organizer)</label>
+            <input type="email" id="organizer-email" placeholder="π.χ. lefteris@company.gr">
+          </div>
+          <div class="field-group">
             <label>Email συναδέλφων (χωρισμένα με κόμμα)</label>
             <input type="text" id="attendees" placeholder="π.χ. colleague@company.gr, manager@company.gr">
           </div>
@@ -1294,7 +1298,14 @@ ${content}
     const day = parts[1].padStart(2,'0');
     const month = parts[2].padStart(2,'0');
     const year = parts[3];
+
+    // Σωστή μορφή ολοήμερου event
     const dateStr = `${year}${month}${day}`;
+    // Επόμενη μέρα για DTEND (απαίτηση iCalendar για ολοήμερα)
+    const endDate = new Date(`${year}-${month}-${day}`);
+    endDate.setDate(endDate.getDate() + 1);
+    const endStr = `${endDate.getFullYear()}${String(endDate.getMonth()+1).padStart(2,'0')}${String(endDate.getDate()).padStart(2,'0')}`;
+
     const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
     const uid = `diagonismos-${Date.now()}@agent`;
 
@@ -1304,8 +1315,13 @@ ${content}
       d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''
     ].filter(Boolean).join('\\n');
 
-    // Attendees
+    const organizerEmail = document.getElementById('organizer-email').value.trim();
     const attendeesInput = document.getElementById('attendees').value.trim();
+
+    const organizerLine = organizerEmail
+      ? `ORGANIZER;CN=Organizer:mailto:${organizerEmail}`
+      : '';
+
     const attendeeLines = attendeesInput
       ? attendeesInput.split(',').map(e => e.trim()).filter(Boolean)
           .map(email => `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${email}`)
@@ -1321,9 +1337,10 @@ ${content}
       `UID:${uid}`,
       `DTSTAMP:${now}`,
       `DTSTART;VALUE=DATE:${dateStr}`,
-      `DTEND;VALUE=DATE:${dateStr}`,
+      `DTEND;VALUE=DATE:${endStr}`,
       `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
       `DESCRIPTION:${desc}`,
+      ...(organizerLine ? [organizerLine] : []),
       ...attendeeLines,
       'BEGIN:VALARM',
       'TRIGGER:-P2D',
@@ -1332,7 +1349,7 @@ ${content}
       'END:VALARM',
       'END:VEVENT',
       'END:VCALENDAR'
-    ];
+    ].filter(Boolean);
 
     const ics = icsLines.join('\r\n');
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
