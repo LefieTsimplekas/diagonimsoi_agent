@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
+<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js" crossorigin="anonymous"></script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -738,6 +738,7 @@
 
   async function initMsal() {
     if (!msalReady) {
+      if (typeof msal === 'undefined') throw new Error('MSAL not loaded');
       msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
       await msalInstance.initialize();
       await msalInstance.handleRedirectPromise();
@@ -760,6 +761,10 @@
 
   async function addToOutlookDirect() {
     if (!reportData) return;
+    if (typeof msal === 'undefined') {
+      alert('Η βιβλιοθήκη Microsoft δεν φόρτωσε. Έλεγξε τη σύνδεσή σου και ανανέωσε τη σελίδα.');
+      return;
+    }
     const d = reportData;
     const btn = document.getElementById('graph-btn');
 
