@@ -635,6 +635,15 @@
           <input type="text" id="company-city" placeholder="π.χ. Θεσσαλονίκη">
         </div>
       </div>
+      <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border)">
+        <div class="section-label" style="margin-bottom:0.75rem">Κοινοποίηση Outlook Calendar (προαιρετικό)</div>
+        <div class="field-row">
+          <div class="field-group" style="grid-column:1/-1">
+            <label>Email συναδέλφων (χωρισμένα με κόμμα)</label>
+            <input type="text" id="attendees" placeholder="π.χ. colleague@company.gr, manager@company.gr">
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="run-wrap">
@@ -1295,12 +1304,19 @@ ${content}
       d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''
     ].filter(Boolean).join('\\n');
 
-    const ics = [
+    // Attendees
+    const attendeesInput = document.getElementById('attendees').value.trim();
+    const attendeeLines = attendeesInput
+      ? attendeesInput.split(',').map(e => e.trim()).filter(Boolean)
+          .map(email => `ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=TRUE:mailto:${email}`)
+      : [];
+
+    const icsLines = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
       'PRODID:-//DiagonismosAgent//GR',
       'CALSCALE:GREGORIAN',
-      'METHOD:PUBLISH',
+      'METHOD:REQUEST',
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${now}`,
@@ -1308,15 +1324,17 @@ ${content}
       `DTEND;VALUE=DATE:${dateStr}`,
       `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
       `DESCRIPTION:${desc}`,
+      ...attendeeLines,
       'BEGIN:VALARM',
-      'TRIGGER:-P3D',
+      'TRIGGER:-P2D',
       'ACTION:DISPLAY',
-      `DESCRIPTION:Υπενθύμιση 3 μέρες πριν: ${d.anatheton || ''}`,
+      `DESCRIPTION:Υπενθύμιση 2 μέρες πριν: ${d.anatheton || ''}`,
       'END:VALARM',
       'END:VEVENT',
       'END:VCALENDAR'
-    ].join('\r\n');
+    ];
 
+    const ics = icsLines.join('\r\n');
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
