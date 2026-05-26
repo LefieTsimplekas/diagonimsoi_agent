@@ -1337,16 +1337,35 @@ ${content}
     const day = parts[1].padStart(2,'0');
     const month = parts[2].padStart(2,'0');
     const year = parts[3];
-
-    // Σωστή μορφή ολοήμερου event
-    const dateStr = `${year}${month}${day}`;
-    // Επόμενη μέρα για DTEND (απαίτηση iCalendar για ολοήμερα)
-    const endDate = new Date(`${year}-${month}-${day}`);
-    endDate.setDate(endDate.getDate() + 1);
-    const endStr = `${endDate.getFullYear()}${String(endDate.getMonth()+1).padStart(2,'0')}${String(endDate.getDate()).padStart(2,'0')}`;
-
     const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
     const uid = `diagonismos-${Date.now()}@agent`;
+
+    // Εξαγωγή ώρας από το hmerominia_lixis αν υπάρχει (π.χ. "15:00")
+    const timeMatch = d.hmerominia_lixis ? d.hmerominia_lixis.match(/(\d{1,2}):(\d{2})/) : null;
+    let endHour, endMin, startHour, startMin;
+
+    if (timeMatch) {
+      endHour = parseInt(timeMatch[1]);
+      endMin = parseInt(timeMatch[2]);
+    } else {
+      // Αν δεν υπάρχει ώρα → 17:00 ως λήξη
+      endHour = 17;
+      endMin = 0;
+    }
+
+    // Μία ώρα πριν = έναρξη
+    startHour = endHour - 1;
+    startMin = endMin;
+    if (startHour < 0) { startHour = 0; startMin = 0; }
+
+    const startHourStr = String(startHour).padStart(2,'0');
+    const startMinStr = String(startMin).padStart(2,'0');
+    const endHourStr = String(endHour).padStart(2,'0');
+    const endMinStr = String(endMin).padStart(2,'0');
+
+    const dateStr = `${year}${month}${day}`;
+    const startDT = `${dateStr}T${startHourStr}${startMinStr}00`;
+    const endDT = `${dateStr}T${endHourStr}${endMinStr}00`;
 
     const desc = [
       `Αναθέτουσα: ${d.anatheton || '—'}`,
@@ -1363,14 +1382,19 @@ ${content}
       'BEGIN:VEVENT',
       `UID:${uid}`,
       `DTSTAMP:${now}`,
-      `DTSTART;VALUE=DATE:${dateStr}`,
-      `DTEND;VALUE=DATE:${endStr}`,
+      `DTSTART;TZID=Europe/Athens:${startDT}`,
+      `DTEND;TZID=Europe/Athens:${endDT}`,
       `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
       `DESCRIPTION:${desc}`,
       'BEGIN:VALARM',
       'TRIGGER:-P2D',
       'ACTION:DISPLAY',
-      `DESCRIPTION:Υπενθύμιση 2 μέρες πριν: ${d.anatheton || ''}`,
+      `DESCRIPTION:⏰ 2 μέρες πριν τη λήξη: ${d.anatheton || ''}`,
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:⏰ ΑΥΡΙΟ λήγει: ${d.anatheton || ''}`,
       'END:VALARM',
       'END:VEVENT',
       'END:VCALENDAR'
