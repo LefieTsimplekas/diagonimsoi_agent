@@ -875,7 +875,8 @@ ${companyInfo}${dilosiPart}
   "anatheton": "αναθέτουσα αρχή ή ΑΓΝΩΣΤΟ",
   "poso": "εκτιμώμενη αξία / προϋπολογισμός ως string (π.χ. '150.000 €') ή ΑΓΝΩΣΤΟ",
   "poso_note": "τυχόν διευκρίνιση για το ποσό (με ΦΠΑ, χωρίς κ.λπ.) ή null",
-  "hmerominia_lixis": "καταληκτική ημερομηνία υποβολής προσφορών ή ΑΓΝΩΣΤΗ",
+  "hmerominia_lixis": "καταληκτική ημερομηνία σε μορφή DD/MM/YYYY αν είναι συγκεκριμένη. Αν είναι σχετική (π.χ. '5 ημέρες από ανάρτηση'), υπολόγισε την απόλυτη ημερομηνία αν υπάρχει ημερομηνία ανάρτησης στο κείμενο. Αλλιώς βάλε ΑΓΝΩΣΤΗ",
+  "hmerominia_lixis_sxetiki": "το αρχικό κείμενο της σχετικής ημερομηνίας αν υπάρχει (π.χ. '5η ημέρα από ανάρτηση στο ΚΗΜΔΗΣ') ή null",
   "hmerominia_anoigmatos": "ημερομηνία αποσφράγισης ή null",
   "alles_hmerominia": [
     { "perigrafi": "περιγραφή", "hmerominia": "ημερομηνία" }
@@ -952,7 +953,9 @@ ${companyInfo}${dilosiPart}
     // Dates card
     let datesHTML = '<div class="date-list">';
     if (d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ') {
-      datesHTML += `<div class="date-item critical"><span class="date-item-label">Καταληκτική υποβολής</span><span class="date-item-val">${d.hmerominia_lixis}</span></div>`;
+      datesHTML += `<div class="date-item critical"><span class="date-item-label">Καταληκτική υποβολής</span><span class="date-item-val">${d.hmerominia_lixis}${d.hmerominia_lixis_sxetiki ? ' <small style="opacity:0.7">(' + d.hmerominia_lixis_sxetiki + ')</small>' : ''}</span></div>`;
+    } else if (d.hmerominia_lixis_sxetiki) {
+      datesHTML += `<div class="date-item warning"><span class="date-item-label">Καταληκτική υποβολής</span><span class="date-item-val">${d.hmerominia_lixis_sxetiki} <small style="opacity:0.7">(βάλε χειροκίνητα στο Outlook)</small></span></div>`;
     }
     if (d.hmerominia_anoigmatos) {
       datesHTML += `<div class="date-item warning"><span class="date-item-label">Αποσφράγιση</span><span class="date-item-val">${d.hmerominia_anoigmatos}</span></div>`;
@@ -1258,17 +1261,27 @@ ${content}
     if (!reportData) return;
     const d = reportData;
 
-    if (!d.hmerominia_lixis || d.hmerominia_lixis === 'ΑΓΝΩΣΤΗ') {
-      alert('Δεν βρέθηκε καταληκτική ημερομηνία στη διακήρυξη.');
-      return;
-    }
+    const rawDate = d.hmerominia_lixis;
+    const parts = rawDate && rawDate !== 'ΑΓΝΩΣΤΗ'
+      ? rawDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/)
+      : null;
 
-    const parts = d.hmerominia_lixis.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
     if (!parts) {
-      alert('Δεν μπόρεσα να αναγνωρίσω την ημερομηνία: ' + d.hmerominia_lixis);
-      return;
+      // Εμφάνισε popup για χειροκίνητη εισαγωγή
+      const sxetiki = d.hmerominia_lixis_sxetiki
+        ? `\n(Στη διακήρυξη αναφέρεται: "${d.hmerominia_lixis_sxetiki}")`
+        : '';
+      const manualDate = prompt(`Δεν βρέθηκε συγκεκριμένη ημερομηνία.${sxetiki}\n\nΒάλε την καταληκτική ημερομηνία (μορφή ΗΗ/ΜΜ/ΕΕΕΕ):`);
+      if (!manualDate) return;
+      const manualParts = manualDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+      if (!manualParts) { alert('Μη έγκυρη μορφή. Χρησιμοποίησε ΗΗ/ΜΜ/ΕΕΕΕ (π.χ. 15/06/2026)'); return; }
+      generateICS(manualParts, d);
+    } else {
+      generateICS(parts, d);
     }
+  }
 
+  function generateICS(parts, d) {
     const day = parts[1].padStart(2,'0');
     const month = parts[2].padStart(2,'0');
     const year = parts[3];
@@ -1279,7 +1292,7 @@ ${content}
     const desc = [
       `Αναθέτουσα: ${d.anatheton || '—'}`,
       `Προϋπολογισμός: ${d.poso || '—'}`,
-      d.dikaiologitika ? `Δικαιολογητικά: ${d.dikaiologitika.split('\\n').length}` : ''
+      d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''
     ].filter(Boolean).join('\\n');
 
     const ics = [
