@@ -7,7 +7,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js" crossorigin="anonymous"></script>
+<script>
+// Dynamic MSAL loader - tries multiple CDNs
+(function() {
+  const cdns = [
+    'https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js',
+    'https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js',
+    'https://unpkg.com/@azure/msal-browser@2.38.3/lib/msal-browser.min.js'
+  ];
+  let idx = 0;
+  function tryLoad() {
+    if (idx >= cdns.length) return;
+    const s = document.createElement('script');
+    s.src = cdns[idx++];
+    s.onerror = tryLoad;
+    document.head.appendChild(s);
+  }
+  tryLoad();
+})();
+</script>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -736,9 +754,17 @@
   let msalInstance = null;
   let msalReady = false;
 
+  async function waitForMsal(timeout = 5000) {
+    const start = Date.now();
+    while (typeof msal === 'undefined') {
+      if (Date.now() - start > timeout) throw new Error('Η βιβλιοθήκη Microsoft δεν φόρτωσε. Ανανέωσε τη σελίδα.');
+      await new Promise(r => setTimeout(r, 100));
+    }
+  }
+
   async function initMsal() {
     if (!msalReady) {
-      if (typeof msal === 'undefined') throw new Error('MSAL not loaded');
+      await waitForMsal();
       msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
       await msalInstance.initialize();
       await msalInstance.handleRedirectPromise();
@@ -761,10 +787,6 @@
 
   async function addToOutlookDirect() {
     if (!reportData) return;
-    if (typeof msal === 'undefined') {
-      alert('Η βιβλιοθήκη Microsoft δεν φόρτωσε. Έλεγξε τη σύνδεσή σου και ανανέωσε τη σελίδα.');
-      return;
-    }
     const d = reportData;
     const btn = document.getElementById('graph-btn');
 
