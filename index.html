@@ -7,25 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script>
-// Dynamic MSAL loader - tries multiple CDNs
-(function() {
-  const cdns = [
-    'https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js',
-    'https://cdn.jsdelivr.net/npm/@azure/msal-browser@2.38.3/lib/msal-browser.min.js',
-    'https://unpkg.com/@azure/msal-browser@2.38.3/lib/msal-browser.min.js'
-  ];
-  let idx = 0;
-  function tryLoad() {
-    if (idx >= cdns.length) return;
-    const s = document.createElement('script');
-    s.src = cdns[idx++];
-    s.onerror = tryLoad;
-    document.head.appendChild(s);
-  }
-  tryLoad();
-})();
-</script>
+
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -703,13 +685,9 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           Εκτύπωση / PDF
         </button>
-        <button class="action-btn primary" id="graph-btn" onclick="addToOutlookDirect()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M12 14v4m-2-2h4"/></svg>
-          Προσθήκη στο Outlook
-        </button>
         <button class="action-btn" onclick="downloadICS()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Outlook (Desktop)
+          Outlook Calendar
         </button>
         <button class="action-btn" onclick="downloadReport()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -741,127 +719,6 @@
 <script>
   const files = { diakirixi: null, dilosi: null };
   let reportData = null;
-
-  // ── MICROSOFT GRAPH API ──
-  const MSAL_CONFIG = {
-    auth: {
-      clientId: '16b744d4-f7cb-44ae-86b6-594b8d56a042',
-      authority: 'https://login.microsoftonline.com/ddd1f095-1301-4c31-b343-eefd324f6bd5',
-      redirectUri: window.location.origin + window.location.pathname
-    }
-  };
-
-  let msalInstance = null;
-  let msalReady = false;
-
-  async function waitForMsal(timeout = 5000) {
-    const start = Date.now();
-    while (typeof msal === 'undefined') {
-      if (Date.now() - start > timeout) throw new Error('Η βιβλιοθήκη Microsoft δεν φόρτωσε. Ανανέωσε τη σελίδα.');
-      await new Promise(r => setTimeout(r, 100));
-    }
-  }
-
-  async function initMsal() {
-    if (!msalReady) {
-      await waitForMsal();
-      msalInstance = new msal.PublicClientApplication(MSAL_CONFIG);
-      await msalInstance.initialize();
-      await msalInstance.handleRedirectPromise();
-      msalReady = true;
-    }
-  }
-
-  async function getGraphToken() {
-    await initMsal();
-    const accounts = msalInstance.getAllAccounts();
-    const request = { scopes: ['Calendars.ReadWrite'], account: accounts[0] };
-    try {
-      const result = await msalInstance.acquireTokenSilent(request);
-      return result.accessToken;
-    } catch {
-      const result = await msalInstance.acquireTokenPopup(request);
-      return result.accessToken;
-    }
-  }
-
-  async function addToOutlookDirect() {
-    if (!reportData) return;
-    const d = reportData;
-    const btn = document.getElementById('graph-btn');
-
-    const rawDate = d.hmerominia_lixis;
-    const parts = rawDate && rawDate !== 'ΑΓΝΩΣΤΗ'
-      ? rawDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/)
-      : null;
-
-    let startDate;
-    if (!parts) {
-      const sxetiki = d.hmerominia_lixis_sxetiki ? `\n("${d.hmerominia_lixis_sxetiki}")` : '';
-      const manualDate = prompt(`Δεν βρέθηκε συγκεκριμένη ημερομηνία.${sxetiki}\n\nΒάλε την καταληκτική (ΗΗ/ΜΜ/ΕΕΕΕ):`);
-      if (!manualDate) return;
-      const mp = manualDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
-      if (!mp) { alert('Μη έγκυρη μορφή.'); return; }
-      startDate = `${mp[3]}-${mp[2].padStart(2,'0')}-${mp[1].padStart(2,'0')}`;
-    } else {
-      startDate = `${parts[3]}-${parts[2].padStart(2,'0')}-${parts[1].padStart(2,'0')}`;
-    }
-
-    const endDt = new Date(startDate);
-    endDt.setDate(endDt.getDate() + 1);
-    const endDate = endDt.toISOString().split('T')[0];
-
-    btn.disabled = true;
-    btn.textContent = 'Σύνδεση...';
-
-    try {
-      const token = await getGraphToken();
-      btn.textContent = 'Αποθήκευση...';
-
-      const event = {
-        subject: `⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
-        isAllDay: true,
-        start: { dateTime: `${startDate}T00:00:00`, timeZone: 'Europe/Athens' },
-        end: { dateTime: `${endDate}T00:00:00`, timeZone: 'Europe/Athens' },
-        body: {
-          contentType: 'text',
-          content: [
-            `Αναθέτουσα: ${d.anatheton || '—'}`,
-            `Προϋπολογισμός: ${d.poso || '—'}`,
-            d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : '',
-            `Τίτλος: ${d.titlos || '—'}`
-          ].filter(Boolean).join('\n')
-        },
-        reminderMinutesBeforeStart: 2880
-      };
-
-      const res = await fetch('https://graph.microsoft.com/v1.0/me/events', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(event)
-      });
-
-      if (res.ok) {
-        btn.textContent = '✓ Προστέθηκε στο Outlook!';
-        btn.style.color = 'var(--accent-mid)';
-        setTimeout(() => {
-          btn.disabled = false;
-          btn.textContent = 'Προσθήκη στο Outlook';
-          btn.style.color = '';
-        }, 3000);
-      } else {
-        const err = await res.json();
-        throw new Error(err.error?.message || 'Σφάλμα Graph API');
-      }
-    } catch(e) {
-      btn.disabled = false;
-      btn.textContent = 'Προσθήκη στο Outlook';
-      alert(`Σφάλμα: ${e.message}`);
-    }
-  }
 
   // Google Sheets Web App URL
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzMFTeyNuKersmrEobiu8OceQSXTr-MJO6pygb_tKrdSqox257g0V3Zw1gIn-fsuAvKAg/exec';
