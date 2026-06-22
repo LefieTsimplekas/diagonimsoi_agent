@@ -7,7 +7,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
+<script>
+(function() {
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/index.js',
+    'https://unpkg.com/docx@8.5.0/build/index.js'
+  ];
+  let idx = 0;
+  function tryLoad() {
+    if (idx >= cdns.length) return;
+    const s = document.createElement('script');
+    s.src = cdns[idx++];
+    s.onerror = tryLoad;
+    document.head.appendChild(s);
+  }
+  tryLoad();
+})();
+</script>
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -658,7 +675,13 @@ ${companyInfo}${dilosiPart}
     const d = reportData;
     const p = d.paratimata[i];
 
-    // Ελέγχουμε αν φορτώθηκε η βιβλιοθήκη docx
+    // Περιμένουμε να φορτώσει η βιβλιοθήκη docx
+    let waited = 0;
+    while (typeof docx === 'undefined' && waited < 5000) {
+      await new Promise(r => setTimeout(r, 200));
+      waited += 200;
+    }
+
     if (typeof docx === 'undefined') {
       alert('Η βιβλιοθήκη Word δεν φόρτωσε. Ανανέωσε τη σελίδα και δοκίμασε ξανά.');
       return;
