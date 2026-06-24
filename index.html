@@ -8,7 +8,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 
-
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -35,116 +34,505 @@
     --sans: 'DM Sans', system-ui, sans-serif;
   }
 
-  body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; font-size: 15px; line-height: 1.6; }
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
 
-  header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 2rem; display: flex; align-items: center; justify-content: space-between; height: 64px; position: sticky; top: 0; z-index: 100; }
-  .logo { display: flex; align-items: center; gap: 10px; }
-  .logo-icon { width: 32px; height: 32px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+  /* ── HEADER ── */
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .logo-icon {
+    width: 32px; height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+  }
   .logo-icon svg { width: 18px; height: 18px; fill: #fff; }
-  .logo-name { font-family: var(--serif); font-size: 20px; color: var(--text); letter-spacing: -0.01em; }
+  .logo-name {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
   .logo-name span { color: var(--accent); }
-  .api-area { display: flex; align-items: center; gap: 10px; }
-  .api-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); transition: background 0.2s; flex-shrink: 0; }
+
+  .api-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .api-input-wrap {
+    position: relative;
+  }
+  .api-input-wrap input {
+    font-family: var(--sans);
+    font-size: 13px;
+    padding: 8px 36px 8px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    width: 260px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .api-input-wrap input:focus { border-color: var(--accent-mid); }
+  .api-input-wrap input::placeholder { color: var(--text-faint); }
+  .eye-btn {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: none; border: none; cursor: pointer; color: var(--text-faint);
+    padding: 2px; display: flex; align-items: center;
+  }
+  .eye-btn:hover { color: var(--text-muted); }
+  .api-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border-strong);
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
   .api-dot.ok { background: var(--accent-mid); }
 
-  .app { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+  /* ── LAYOUT ── */
+  .app {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
 
-  .hero { text-align: center; padding: 2.5rem 0 2rem; }
-  .hero h1 { font-family: var(--serif); font-size: 38px; font-weight: 400; line-height: 1.15; letter-spacing: -0.02em; color: var(--text); margin-bottom: 0.75rem; }
-  .hero h1 em { font-style: italic; color: var(--accent); }
-  .hero p { color: var(--text-muted); font-size: 16px; font-weight: 300; max-width: 500px; margin: 0 auto; }
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 2.5rem 0 2rem;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: 38px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text);
+    margin-bottom: 0.75rem;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero p {
+    color: var(--text-muted);
+    font-size: 16px;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+  }
 
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
-  .step-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
-  .step-num { font-family: var(--serif); font-size: 32px; font-weight: 400; color: var(--border-strong); line-height: 1; margin-bottom: 0.5rem; }
-  .step-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.25rem; }
-  .step-desc { font-size: 13px; color: var(--text-muted); font-weight: 300; }
+  /* ── STEPS ── */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .step-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    position: relative;
+  }
+  .step-num {
+    font-family: var(--serif);
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--border-strong);
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+  .step-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 0.25rem;
+  }
+  .step-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-weight: 300;
+  }
 
-  .upload-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; margin-bottom: 1.5rem; }
-  .section-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 1rem; }
-  .upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .upload-zone { border: 1.5px dashed var(--border-strong); border-radius: var(--radius); padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; background: var(--bg); }
-  .upload-zone:hover, .upload-zone.dragover { border-color: var(--accent-mid); background: var(--accent-light); }
-  .upload-zone.has-file { border-style: solid; border-color: var(--accent-mid); background: var(--accent-light); }
-  .upload-zone input[type="file"] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-  .upload-icon { width: 36px; height: 36px; background: var(--border); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin: 0 auto 0.75rem; transition: background 0.2s; }
-  .upload-zone:hover .upload-icon, .upload-zone.has-file .upload-icon { background: var(--accent-mid); }
+  /* ── UPLOAD AREA ── */
+  .upload-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .section-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin-bottom: 1rem;
+  }
+  .upload-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .upload-zone {
+    border: 1.5px dashed var(--border-strong);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    background: var(--bg);
+  }
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent-mid);
+    background: var(--accent-light);
+  }
+  .upload-zone.has-file {
+    border-style: solid;
+    border-color: var(--accent-mid);
+    background: var(--accent-light);
+  }
+  .upload-zone input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+  }
+  .upload-icon {
+    width: 36px; height: 36px;
+    background: var(--border);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 0.75rem;
+    transition: background 0.2s;
+  }
+  .upload-zone:hover .upload-icon,
+  .upload-zone.has-file .upload-icon { background: var(--accent-mid); }
   .upload-icon svg { width: 18px; height: 18px; fill: #fff; }
   .upload-title { font-size: 14px; font-weight: 500; color: var(--text); margin-bottom: 0.25rem; }
   .upload-sub { font-size: 12px; color: var(--text-faint); }
-  .upload-filename { font-size: 12px; color: var(--accent); font-weight: 500; margin-top: 0.5rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .upload-filename {
+    font-size: 12px; color: var(--accent); font-weight: 500; margin-top: 0.5rem;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
 
-  .company-section { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 2rem; margin-bottom: 1.5rem; }
-  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  /* ── COMPANY FIELD ── */
+  .company-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+  }
+  .field-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
   .field-group { display: flex; flex-direction: column; gap: 6px; }
   .field-group label { font-size: 13px; color: var(--text-muted); font-weight: 400; }
-  .field-group input { font-family: var(--sans); font-size: 14px; padding: 9px 13px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text); outline: none; transition: border-color 0.15s; }
+  .field-group input {
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 9px 13px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
   .field-group input:focus { border-color: var(--accent-mid); }
   .field-group input::placeholder { color: var(--text-faint); }
 
+  /* ── RUN BUTTON ── */
   .run-wrap { text-align: center; margin-bottom: 2rem; }
-  .run-btn { font-family: var(--sans); font-size: 16px; font-weight: 500; padding: 14px 40px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius); cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; gap: 10px; letter-spacing: -0.01em; }
+  .run-btn {
+    font-family: var(--sans);
+    font-size: 16px;
+    font-weight: 500;
+    padding: 14px 40px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    letter-spacing: -0.01em;
+  }
   .run-btn:hover { background: var(--accent-mid); transform: translateY(-1px); }
+  .run-btn:active { transform: translateY(0); }
   .run-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .run-btn svg { width: 20px; height: 20px; fill: #fff; }
 
-  .progress-wrap { display: none; margin-bottom: 2rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem 2rem; }
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    display: none;
+    margin-bottom: 2rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem 2rem;
+  }
   .progress-steps { display: flex; flex-direction: column; gap: 12px; }
-  .progress-step { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--text-faint); transition: color 0.3s; }
+  .progress-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--text-faint);
+    transition: color 0.3s;
+  }
   .progress-step.active { color: var(--text); }
   .progress-step.done { color: var(--accent-mid); }
-  .p-dot { width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--border-strong); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.3s; font-size: 10px; }
-  .progress-step.active .p-dot { border-color: var(--accent-mid); background: var(--accent-light); animation: pulse-dot 1s ease-in-out infinite; }
-  .progress-step.done .p-dot { border-color: var(--accent-mid); background: var(--accent-mid); color: #fff; }
+  .p-dot {
+    width: 20px; height: 20px; border-radius: 50%;
+    border: 1.5px solid var(--border-strong);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.3s;
+    font-size: 10px;
+  }
+  .progress-step.active .p-dot {
+    border-color: var(--accent-mid);
+    background: var(--accent-light);
+    animation: pulse-dot 1s ease-in-out infinite;
+  }
+  .progress-step.done .p-dot {
+    border-color: var(--accent-mid);
+    background: var(--accent-mid);
+    color: #fff;
+  }
   @keyframes pulse-dot { 0%,100%{transform:scale(1)} 50%{transform:scale(1.15)} }
 
+  /* ── REPORT ── */
   .report-wrap { display: none; }
-  .report-header { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 1.5rem; }
-  .report-title { font-family: var(--serif); font-size: 22px; font-weight: 400; line-height: 1.3; color: var(--text); }
-  .report-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-  .action-btn { font-family: var(--sans); font-size: 13px; font-weight: 500; padding: 8px 16px; border: 1px solid var(--border-strong); border-radius: var(--radius); background: var(--surface); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; transition: all 0.15s; }
+  .report-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .report-title {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text);
+  }
+  .report-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .action-btn {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
   .action-btn:hover { background: var(--bg); color: var(--text); border-color: var(--text-muted); }
   .action-btn svg { width: 16px; height: 16px; }
+  .action-btn.primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .action-btn.primary:hover { background: var(--accent-mid); border-color: var(--accent-mid); }
+  .action-btn.primary svg { fill: #fff; }
 
   .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-  .report-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; }
+  .report-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+  }
   .report-card.full { grid-column: 1 / -1; }
-  .card-label { font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 6px; }
+  .card-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-faint);
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
   .card-label svg { width: 14px; height: 14px; }
 
+  /* dates */
   .date-list { display: flex; flex-direction: column; gap: 8px; }
-  .date-item { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--radius); font-size: 14px; }
+  .date-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    font-size: 14px;
+  }
   .date-item.critical { background: var(--danger-light); color: var(--danger); }
   .date-item.warning { background: var(--warning-light); color: var(--warning); }
   .date-item.info { background: var(--info-light); color: var(--info); }
   .date-item-label { font-weight: 500; flex: 1; }
   .date-item-val { font-size: 13px; font-weight: 400; opacity: 0.85; }
 
-  .budget-big { font-family: var(--serif); font-size: 36px; font-weight: 400; color: var(--accent); line-height: 1; margin-bottom: 0.25rem; }
+  /* budget */
+  .budget-big {
+    font-family: var(--serif);
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.25rem;
+  }
   .budget-sub { font-size: 13px; color: var(--text-muted); }
 
+  /* docs */
   .doc-list { display: flex; flex-direction: column; gap: 6px; }
-  .doc-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 14px; background: var(--bg); }
-  .doc-badge { font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 1px; }
+  .doc-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--bg);
+  }
+  .doc-badge {
+    font-size: 10px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
   .doc-badge.critical { background: var(--danger-light); color: var(--danger); }
   .doc-badge.standard { background: var(--info-light); color: var(--info); }
   .doc-name { font-weight: 500; color: var(--text); }
   .doc-note { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 
-  .decl-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 1rem; }
-  .decl-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  /* declarations */
+  .decl-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+  .decl-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+  }
   .decl-title { font-size: 14px; font-weight: 500; color: var(--text); }
-  .copy-btn { font-family: var(--sans); font-size: 12px; padding: 5px 12px; border: 1px solid var(--border-strong); border-radius: 6px; background: var(--bg); color: var(--text-muted); cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.15s; }
+  .copy-btn {
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.15s;
+  }
   .copy-btn:hover { background: var(--surface); color: var(--text); }
   .copy-btn svg { width: 13px; height: 13px; }
-  .decl-text { font-size: 13px; line-height: 1.85; color: var(--text); background: var(--bg); border-radius: var(--radius); padding: 14px 16px; border: 1px solid var(--border); white-space: pre-wrap; font-family: var(--serif); }
+  .decl-text {
+    font-size: 13px;
+    line-height: 1.85;
+    color: var(--text);
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    white-space: pre-wrap;
+    font-family: var(--serif);
+  }
 
+  /* notes */
   .note-list { display: flex; flex-direction: column; gap: 6px; }
-  .note-item { font-size: 13px; color: var(--text-muted); padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border); display: flex; gap: 8px; align-items: flex-start; }
+  .note-item {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 8px 12px 8px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
   .note-item:last-child { border-bottom: none; }
   .note-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong); flex-shrink: 0; margin-top: 7px; }
 
-  .error-box { background: var(--danger-light); border: 1px solid #e4b4b4; border-radius: var(--radius); padding: 14px 18px; color: var(--danger); font-size: 14px; margin-bottom: 1rem; }
+  /* error */
+  .error-box {
+    background: var(--danger-light);
+    border: 1px solid #e4b4b4;
+    border-radius: var(--radius);
+    padding: 14px 18px;
+    color: var(--danger);
+    font-size: 14px;
+    margin-bottom: 1rem;
+  }
+
+  /* reset */
+  .reset-btn {
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 24px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { background: var(--bg); color: var(--text); }
 
   @media (max-width: 640px) {
     .steps { grid-template-columns: 1fr; }
@@ -153,6 +541,7 @@
     .report-grid { grid-template-columns: 1fr; }
     .report-card.full { grid-column: 1; }
     .hero h1 { font-size: 28px; }
+    .api-input-wrap input { width: 180px; }
     header { padding: 0 1rem; }
   }
 </style>
@@ -164,7 +553,7 @@
     <div class="logo-icon">
       <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5zM8 13h8v1.5H8V13zm0 3h5v1.5H8V16zm0-6h3v1.5H8V10z"/></svg>
     </div>
-    <span class="logo-name">Δια<span>γωνισμός</span></span>
+    <span class="logo-name">Δια<em>γωνισμός</em></span>
   </div>
   <div class="api-area">
     <div class="api-dot ok" id="api-dot"></div>
@@ -197,24 +586,33 @@
     </div>
   </div>
 
+  <!-- INPUT SECTION -->
   <div id="input-section">
+
     <div class="upload-section">
       <div class="section-label">Αρχεία διαγωνισμού</div>
       <div class="upload-grid">
+
         <div class="upload-zone" id="zone-diakirixi" ondragover="dragOver(event,'zone-diakirixi')" ondragleave="dragLeave('zone-diakirixi')" ondrop="dropFile(event,'diakirixi')">
           <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="fileSelected(event,'diakirixi')" id="file-diakirixi">
-          <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5z"/></svg></div>
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm-1 1.5L18.5 9H13V3.5z"/></svg>
+          </div>
           <div class="upload-title">Διακήρυξη / Έντυπο</div>
           <div class="upload-sub">PDF, Word ή TXT</div>
           <div class="upload-filename" id="name-diakirixi"></div>
         </div>
+
         <div class="upload-zone" id="zone-dilosi" ondragover="dragOver(event,'zone-dilosi')" ondragleave="dragLeave('zone-dilosi')" ondrop="dropFile(event,'dilosi')">
           <input type="file" accept=".pdf,.doc,.docx,.txt" onchange="fileSelected(event,'dilosi')" id="file-dilosi">
-          <div class="upload-icon"><svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+          <div class="upload-icon">
+            <svg viewBox="0 0 24 24"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
           <div class="upload-title">Template Υπεύθυνης Δήλωσης</div>
           <div class="upload-sub">Προαιρετικό — PDF ή Word</div>
           <div class="upload-filename" id="name-dilosi"></div>
         </div>
+
       </div>
     </div>
 
@@ -250,19 +648,36 @@
         Ανάλυση διαγωνισμού
       </button>
     </div>
-    <div id="error-wrap"></div>
-  </div>
 
+    <div id="error-wrap"></div>
+
+  </div><!-- /input-section -->
+
+  <!-- PROGRESS -->
   <div class="progress-wrap" id="progress-wrap">
     <div class="progress-steps">
-      <div class="progress-step" id="ps-1"><div class="p-dot" id="pd-1"></div><span>Ανάγνωση εγγράφου...</span></div>
-      <div class="progress-step" id="ps-2"><div class="p-dot" id="pd-2"></div><span>Ανάλυση δικαιολογητικών και ημερομηνιών...</span></div>
-      <div class="progress-step" id="ps-3"><div class="p-dot" id="pd-3"></div><span>Σύνταξη υπεύθυνων δηλώσεων...</span></div>
-      <div class="progress-step" id="ps-4"><div class="p-dot" id="pd-4"></div><span>Ετοιμασία report...</span></div>
+      <div class="progress-step" id="ps-1">
+        <div class="p-dot" id="pd-1"></div>
+        <span>Ανάγνωση εγγράφου...</span>
+      </div>
+      <div class="progress-step" id="ps-2">
+        <div class="p-dot" id="pd-2"></div>
+        <span>Ανάλυση δικαιολογητικών και ημερομηνιών...</span>
+      </div>
+      <div class="progress-step" id="ps-3">
+        <div class="p-dot" id="pd-3"></div>
+        <span>Σύνταξη υπεύθυνων δηλώσεων...</span>
+      </div>
+      <div class="progress-step" id="ps-4">
+        <div class="p-dot" id="pd-4"></div>
+        <span>Ετοιμασία report...</span>
+      </div>
     </div>
   </div>
 
+  <!-- REPORT -->
   <div class="report-wrap" id="report-wrap">
+
     <div class="report-header">
       <div class="report-title" id="report-title">Report Διαγωνισμού</div>
       <div class="report-actions">
@@ -292,17 +707,20 @@
         </button>
       </div>
     </div>
+
     <div class="report-grid" id="report-grid"></div>
     <div id="decl-section"></div>
     <div id="notes-section"></div>
-  </div>
 
-</div>
+  </div><!-- /report-wrap -->
+
+</div><!-- /app -->
 
 <script>
   const files = { diakirixi: null, dilosi: null };
   let reportData = null;
 
+  // Google Sheets Web App URL
   const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzMFTeyNuKersmrEobiu8OceQSXTr-MJO6pygb_tKrdSqox257g0V3Zw1gIn-fsuAvKAg/exec';
 
   async function saveToSheets() {
@@ -311,6 +729,7 @@
     const btn = document.getElementById('sheets-btn');
     btn.disabled = true;
     btn.textContent = 'Αποθήκευση...';
+
     const payload = {
       titlos: d.titlos || '—',
       anatheton: d.anatheton || '—',
@@ -319,54 +738,110 @@
       dikaiologitika: d.dikaiologitika ? d.dikaiologitika.map((dk, i) => `${i+1}. ${dk.onoma}`).join('\n') : '—',
       simantika: d.simantika ? d.simantika.map((s, i) => `${i+1}. ${s}`).join('\n') : '—'
     };
+
     try {
-      await fetch(SHEETS_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      await fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
       btn.textContent = '✓ Αποθηκεύτηκε!';
       btn.style.color = 'var(--accent-mid)';
-      setTimeout(() => { btn.disabled = false; btn.textContent = 'Αποθήκευση στο Sheets'; btn.style.color = ''; }, 3000);
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.textContent = 'Αποθήκευση στο Sheets';
+        btn.style.color = '';
+      }, 3000);
     } catch(e) {
       btn.textContent = 'Σφάλμα — δοκίμασε ξανά';
       btn.disabled = false;
     }
   }
+  // Για να αλλάξεις το key: βρες το ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY και αντικατέστησέ το με το νέο Gemini API key
+  const ACCESS = {
+    'diagonismoi2026': 'ΒΑΛΕ_ΕΔΩ_ΤΟ_KEY'
+  };
 
-  function dragOver(e, id) { e.preventDefault(); document.getElementById(id).classList.add('dragover'); }
-  function dragLeave(id) { document.getElementById(id).classList.remove('dragover'); }
+  function checkPassword() {
+    const p = document.getElementById('api-key').value.trim();
+    document.getElementById('api-dot').className = 'api-dot' + (ACCESS[p] ? ' ok' : '');
+  }
+
+  function getApiKey() {
+    const p = document.getElementById('api-key').value.trim();
+    return ACCESS[p] || null;
+  }
+
+  function toggleEye() {
+    const inp = document.getElementById('api-key');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+
+  function dragOver(e, id) {
+    e.preventDefault();
+    document.getElementById(id).classList.add('dragover');
+  }
+  function dragLeave(id) {
+    document.getElementById(id).classList.remove('dragover');
+  }
   function dropFile(e, key) {
     e.preventDefault();
-    document.getElementById('zone-' + (key === 'diakirixi' ? 'diakirixi' : 'dilosi')).classList.remove('dragover');
+    const id = 'zone-' + (key === 'diakirixi' ? 'diakirixi' : 'dilosi');
+    document.getElementById(id).classList.remove('dragover');
     const f = e.dataTransfer.files[0];
     if (f) setFile(key, f);
   }
-  function fileSelected(e, key) { const f = e.target.files[0]; if (f) setFile(key, f); }
+  function fileSelected(e, key) {
+    const f = e.target.files[0];
+    if (f) setFile(key, f);
+  }
   function setFile(key, f) {
     files[key] = f;
-    document.getElementById('zone-' + (key === 'diakirixi' ? 'diakirixi' : 'dilosi')).classList.add('has-file');
+    const zone = document.getElementById('zone-' + (key === 'diakirixi' ? 'diakirixi' : 'dilosi'));
+    zone.classList.add('has-file');
     document.getElementById('name-' + (key === 'diakirixi' ? 'diakirixi' : 'dilosi')).textContent = f.name;
   }
+
   function toBase64(file) {
-    return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result.split(',')[1]); r.onerror = rej; r.readAsDataURL(file); });
+    return new Promise((res, rej) => {
+      const r = new FileReader();
+      r.onload = () => res(r.result.split(',')[1]);
+      r.onerror = rej;
+      r.readAsDataURL(file);
+    });
   }
+
   function getMimeType(file) {
     if (file.name.endsWith('.pdf')) return 'application/pdf';
     if (file.name.endsWith('.docx')) return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
     if (file.name.endsWith('.doc')) return 'application/msword';
     return 'text/plain';
   }
+
   function setProgress(step) {
     for (let i = 1; i <= 4; i++) {
       const ps = document.getElementById('ps-' + i);
       const pd = document.getElementById('pd-' + i);
-      if (i < step) { ps.className = 'progress-step done'; pd.textContent = '✓'; }
-      else if (i === step) { ps.className = 'progress-step active'; pd.textContent = ''; }
-      else { ps.className = 'progress-step'; pd.textContent = ''; }
+      if (i < step) {
+        ps.className = 'progress-step done';
+        pd.textContent = '✓';
+      } else if (i === step) {
+        ps.className = 'progress-step active';
+        pd.textContent = '';
+      } else {
+        ps.className = 'progress-step';
+        pd.textContent = '';
+      }
     }
   }
 
   async function runAnalysis() {
     const errWrap = document.getElementById('error-wrap');
     errWrap.innerHTML = '';
+
     if (!files.diakirixi) { errWrap.innerHTML = '<div class="error-box">Ανέβασε τουλάχιστον το αρχείο της διακήρυξης.</div>'; return; }
+
     const company = document.getElementById('company-name').value.trim();
     const afm = document.getElementById('company-afm').value.trim();
     const rep = document.getElementById('rep-name').value.trim();
@@ -374,130 +849,197 @@
     const companyInfo = company
       ? `Εταιρεία: ${company}${afm ? ', ΑΦΜ: ' + afm : ''}${rep ? ', Εκπρόσωπος: ' + rep : ''}${city ? ', Έδρα: ' + city : ''}`
       : 'Στοιχεία εταιρείας: [δεν δόθηκαν — άφησε κενά στις δηλώσεις]';
+
     document.getElementById('run-btn').disabled = true;
     document.getElementById('input-section').style.display = 'none';
     const pw = document.getElementById('progress-wrap');
     pw.style.display = 'block';
     setProgress(1);
+
     try {
       const b64 = await toBase64(files.diakirixi);
       const mime = getMimeType(files.diakirixi);
+
       let dilosiPart = '';
       if (files.dilosi) {
+        const db64 = await toBase64(files.dilosi);
+        const dmime = getMimeType(files.dilosi);
         dilosiPart = `\n\nΕπίσης επισυνάπτεται το template υπεύθυνης δήλωσης (${files.dilosi.name}) — χρησιμοποίησε αυτή τη δομή για τις δηλώσεις που θα συντάξεις.`;
       }
+
       setProgress(2);
+
       const prompt = `Είσαι ειδικός σε δημόσιους διαγωνισμούς υπηρεσιών στην Ελλάδα (Ν. 4412/2016, ΕΣΗΔΗΣ).
 
 ${companyInfo}${dilosiPart}
 
-Αναλύσε το συνημμένο έγγραφο και επέστρεψε ΑΠΟΚΛΕΙΣΤΙΚΑ ένα JSON αντικείμενο χωρίς backticks, χωρίς markdown, χωρίς επεξηγήσεις:
+Αναλύσε το συνημμένο έγγραφο (διακήρυξη δημόσιου διαγωνισμού) και επέστρεψε ΑΠΟΚΛΕΙΣΤΙΚΑ ένα JSON αντικείμενο χωρίς backticks, χωρίς markdown, χωρίς επεξηγήσεις:
 
 {
   "titlos": "τίτλος/αντικείμενο διαγωνισμού (σύντομος, 1-2 γραμμές)",
   "anatheton": "αναθέτουσα αρχή ή ΑΓΝΩΣΤΟ",
   "poso": "εκτιμώμενη αξία / προϋπολογισμός ως string (π.χ. '150.000 €') ή ΑΓΝΩΣΤΟ",
   "poso_note": "τυχόν διευκρίνιση για το ποσό (με ΦΠΑ, χωρίς κ.λπ.) ή null",
-  "hmerominia_lixis": "καταληκτική ημερομηνία σε μορφή DD/MM/YYYY HH:MM αν υπάρχει ώρα, αλλιώς DD/MM/YYYY. Αν είναι σχετική, υπολόγισε απόλυτη αν υπάρχει ημερομηνία ανάρτησης. Αλλιώς ΑΓΝΩΣΤΗ",
-  "hmerominia_lixis_sxetiki": "το αρχικό κείμενο σχετικής ημερομηνίας ή null",
+  "hmerominia_lixis": "καταληκτική ημερομηνία σε μορφή DD/MM/YYYY αν είναι συγκεκριμένη. Αν είναι σχετική (π.χ. '5 ημέρες από ανάρτηση'), υπολόγισε την απόλυτη ημερομηνία αν υπάρχει ημερομηνία ανάρτησης στο κείμενο. Αλλιώς βάλε ΑΓΝΩΣΤΗ",
+  "hmerominia_lixis_sxetiki": "το αρχικό κείμενο της σχετικής ημερομηνίας αν υπάρχει (π.χ. '5η ημέρα από ανάρτηση στο ΚΗΜΔΗΣ') ή null",
   "hmerominia_anoigmatos": "ημερομηνία αποσφράγισης ή null",
-  "alles_hmerominia": [{ "perigrafi": "περιγραφή", "hmerominia": "ημερομηνία" }],
-  "dikaiologitika": [{ "onoma": "όνομα εγγράφου", "kritiko": true/false, "simeioseis": "σχόλιο ή null" }],
-  "ipefthines_diloseis": [{ "titlos": "τίτλος δήλωσης", "keimeno": "πλήρες κείμενο" }],
-  "simantika": ["παρατηρήσεις"]
+  "alles_hmerominia": [
+    { "perigrafi": "περιγραφή", "hmerominia": "ημερομηνία" }
+  ],
+  "dikaiologitika": [
+    { "onoma": "όνομα εγγράφου", "kritiko": true/false, "simeioseis": "σχόλιο ή null" }
+  ],
+  "ipefthines_diloseis": [
+    { "titlos": "τίτλος δήλωσης", "keimeno": "πλήρες κείμενο υπεύθυνης δήλωσης με τα στοιχεία εταιρείας αν δόθηκαν, νομικά ορθό, έτοιμο για υπογραφή" }
+  ],
+  "simantika": ["σημαντικές παρατηρήσεις, παγίδες, ιδιαιτερότητες"]
 }
 
-Για τις παρατηρήσεις: ΜΕΓΙΣΤΟ 5, κάθε μία ΜΕΓΙΣΤΟ 15 λέξεις. Μόνο πρακτικές πληροφορίες (τρόπος υποβολής, παγίδες, κρυφές προθεσμίες). Όχι γενικές αναφορές σε νόμους.
+Για τις παρατηρήσεις ("simantika"): ΜΕΓΙΣΤΟ 5 παρατηρήσεις. Κάθε μία ΜΕΓΙΣΤΟ 15 λέξεις. Μόνο πρακτικές πληροφορίες που επηρεάζουν άμεσα την υποβολή (τρόπος υποβολής, παγίδες, κρυφές προθεσμίες, ιδιαιτερότητες). Όχι γενικές αναφορές σε νόμους.
 
-Για τις υπεύθυνες δηλώσεις: ΠΑΝΤΑ ξεκίνα με:
+Για τις υπεύθυνες δηλώσεις: ΠΑΝΤΑ ξεκίνα με αυτό ακριβώς το standard κείμενο:
 "Με ατομική μου ευθύνη και γνωρίζοντας τις κυρώσεις (2), που προβλέπονται από τις διατάξεις της παρ. 6 του άρθρου 22 του Ν. 1599/1986, δηλώνω ότι:
 
 Ως νόμιμος εκπρόσωπος της εταιρείας [ΕΠΩΝΥΜΙΑ] δηλώνω ότι:"
 
-Αντικατέστησε [ΕΠΩΝΥΜΙΑ] με την επωνυμία αν δόθηκε, αλλιώς "……………".
+Αντικατέστησε το [ΕΠΩΝΥΜΙΑ] με την επωνυμία εταιρείας αν δόθηκε, αλλιώς άφησε κενό "……………".
+Μετά από αυτό το standard κείμενο, πρόσθεσε το συγκεκριμένο περιεχόμενο της δήλωσης όπως ζητείται στη διακήρυξη.
 Αν δεν ζητούνται υπεύθυνες δηλώσεις, βάλε κενό array.`;
 
       setProgress(3);
-      const parts = [{ inlineData: { mimeType: mime, data: b64 } }, { text: prompt }];
-      const res = await fetch('https://autumn-snow-bea1.lefteris-tsimp.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents: [{ parts }] })
-      });
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error?.message || `HTTP ${res.status}`); }
-      const data = await res.json();
-      let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-      // Debug — αν είναι κενό εμφάνισε λεπτομέρειες
-      if (!raw || raw.trim() === '') {
-        const debugInfo = JSON.stringify({
-          finishReason: data.candidates?.[0]?.finishReason,
-          promptFeedback: data.promptFeedback,
-          candidatesCount: data.candidates?.length
-        }, null, 2);
-        throw new Error(`Κενή απάντηση από AI. Debug: ${debugInfo}`);
+      const parts = [
+        { inlineData: { mimeType: mime, data: b64 } },
+        { text: prompt }
+      ];
+
+      const res = await fetch(
+        'https://autumn-snow-bea1.lefteris-tsimp.workers.dev',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ contents: [{ parts }] })
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error?.message || `HTTP ${res.status}`);
       }
 
+      const data = await res.json();
+      let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
       raw = raw.replace(/```json|```/g, '').trim();
       const firstBrace = raw.indexOf('{');
       const lastBrace = raw.lastIndexOf('}');
       if (firstBrace !== -1 && lastBrace !== -1) raw = raw.slice(firstBrace, lastBrace + 1);
       const parsed = JSON.parse(raw);
+
       setProgress(4);
       reportData = parsed;
       await new Promise(r => setTimeout(r, 600));
+
       pw.style.display = 'none';
       renderReport(parsed);
+
     } catch(e) {
       pw.style.display = 'none';
       document.getElementById('input-section').style.display = 'block';
       document.getElementById('run-btn').disabled = false;
-      errWrap.innerHTML = `<div class="error-box"><strong>Σφάλμα:</strong> ${e.message}<br><small>Έλεγξε ότι το αρχείο είναι αναγνώσιμο PDF.</small></div>`;
+      errWrap.innerHTML = `<div class="error-box"><strong>Σφάλμα:</strong> ${e.message}<br><small>Έλεγξε ότι το API key είναι σωστό και το αρχείο είναι αναγνώσιμο PDF.</small></div>`;
     }
   }
 
   function renderReport(d) {
     document.getElementById('report-title').textContent = d.titlos || 'Ανάλυση Διαγωνισμού';
+
     let gridHTML = '';
+
+    // Dates card
     let datesHTML = '<div class="date-list">';
     if (d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ') {
       datesHTML += `<div class="date-item critical"><span class="date-item-label">Καταληκτική υποβολής</span><span class="date-item-val">${d.hmerominia_lixis}${d.hmerominia_lixis_sxetiki ? ' <small style="opacity:0.7">(' + d.hmerominia_lixis_sxetiki + ')</small>' : ''}</span></div>`;
     } else if (d.hmerominia_lixis_sxetiki) {
       datesHTML += `<div class="date-item warning"><span class="date-item-label">Καταληκτική υποβολής</span><span class="date-item-val">${d.hmerominia_lixis_sxetiki} <small style="opacity:0.7">(βάλε χειροκίνητα στο Outlook)</small></span></div>`;
     }
-    if (d.hmerominia_anoigmatos) datesHTML += `<div class="date-item warning"><span class="date-item-label">Αποσφράγιση</span><span class="date-item-val">${d.hmerominia_anoigmatos}</span></div>`;
-    if (d.alles_hmerominia && d.alles_hmerominia.length) {
-      d.alles_hmerominia.forEach(h => { datesHTML += `<div class="date-item info"><span class="date-item-label">${h.perigrafi}</span><span class="date-item-val">${h.hmerominia}</span></div>`; });
+    if (d.hmerominia_anoigmatos) {
+      datesHTML += `<div class="date-item warning"><span class="date-item-label">Αποσφράγιση</span><span class="date-item-val">${d.hmerominia_anoigmatos}</span></div>`;
     }
-    if (!d.hmerominia_lixis && (!d.alles_hmerominia || !d.alles_hmerominia.length)) datesHTML += '<div class="date-item info"><span class="date-item-label">Δεν εντοπίστηκαν ημερομηνίες</span></div>';
+    if (d.alles_hmerominia && d.alles_hmerominia.length) {
+      d.alles_hmerominia.forEach(h => {
+        datesHTML += `<div class="date-item info"><span class="date-item-label">${h.perigrafi}</span><span class="date-item-val">${h.hmerominia}</span></div>`;
+      });
+    }
+    if (!d.hmerominia_lixis && (!d.alles_hmerominia || !d.alles_hmerominia.length)) {
+      datesHTML += '<div class="date-item info"><span class="date-item-label">Δεν εντοπίστηκαν ημερομηνίες</span></div>';
+    }
     datesHTML += '</div>';
-    gridHTML += `<div class="report-card"><div class="card-label"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Σημαντικές ημερομηνίες</div>${datesHTML}</div>`;
-    gridHTML += `<div class="report-card"><div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Προϋπολογισμός</div><div class="budget-big">${d.poso || '—'}</div>${d.poso_note ? `<div class="budget-sub">${d.poso_note}</div>` : ''}${d.anatheton ? `<div class="budget-sub" style="margin-top:0.75rem;color:var(--text-muted)"><strong>Αναθέτουσα:</strong> ${d.anatheton}</div>` : ''}</div>`;
+
+    gridHTML += `<div class="report-card">
+      <div class="card-label"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Σημαντικές ημερομηνίες</div>
+      ${datesHTML}
+    </div>`;
+
+    // Budget card
+    gridHTML += `<div class="report-card">
+      <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Προϋπολογισμός</div>
+      <div class="budget-big">${d.poso || '—'}</div>
+      ${d.poso_note ? `<div class="budget-sub">${d.poso_note}</div>` : ''}
+      ${d.anatheton ? `<div class="budget-sub" style="margin-top:0.75rem;color:var(--text-muted)"><strong>Αναθέτουσα:</strong> ${d.anatheton}</div>` : ''}
+    </div>`;
+
+    // Documents card
     if (d.dikaiologitika && d.dikaiologitika.length) {
       let docsHTML = '<div class="doc-list">';
       d.dikaiologitika.forEach(dk => {
-        docsHTML += `<div class="doc-item"><span class="doc-badge ${dk.kritiko ? 'critical' : 'standard'}">${dk.kritiko ? 'Κρίσιμο' : 'Τυπικό'}</span><div><div class="doc-name">${dk.onoma}</div>${dk.simeioseis ? `<div class="doc-note">${dk.simeioseis}</div>` : ''}</div></div>`;
+        docsHTML += `<div class="doc-item">
+          <span class="doc-badge ${dk.kritiko ? 'critical' : 'standard'}">${dk.kritiko ? 'Κρίσιμο' : 'Τυπικό'}</span>
+          <div>
+            <div class="doc-name">${dk.onoma}</div>
+            ${dk.simeioseis ? `<div class="doc-note">${dk.simeioseis}</div>` : ''}
+          </div>
+        </div>`;
       });
       docsHTML += '</div>';
-      gridHTML += `<div class="report-card full"><div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Δικαιολογητικά συμμετοχής (${d.dikaiologitika.length})</div>${docsHTML}</div>`;
+      gridHTML += `<div class="report-card full">
+        <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>Δικαιολογητικά συμμετοχής (${d.dikaiologitika.length})</div>
+        ${docsHTML}
+      </div>`;
     }
+
     document.getElementById('report-grid').innerHTML = gridHTML;
 
+    // Declarations
     let declHTML = '';
     if (d.ipefthines_diloseis && d.ipefthines_diloseis.length) {
       d.ipefthines_diloseis.forEach((id, i) => {
-        declHTML += `<div class="decl-item"><div class="decl-header"><div class="decl-title">Υπεύθυνη Δήλωση: ${id.titlos}</div><button class="copy-btn" onclick="copyDecl(${i})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Αντιγραφή</button></div><div class="decl-text" id="decl-text-${i}">${id.keimeno}</div></div>`;
+        declHTML += `<div class="decl-item">
+          <div class="decl-header">
+            <div class="decl-title">Υπεύθυνη Δήλωση: ${id.titlos}</div>
+            <button class="copy-btn" onclick="copyDecl(${i})">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Αντιγραφή
+            </button>
+          </div>
+          <div class="decl-text" id="decl-text-${i}">${id.keimeno}</div>
+        </div>`;
       });
     }
     document.getElementById('decl-section').innerHTML = declHTML;
 
+    // Notes
     let notesHTML = '';
     if (d.simantika && d.simantika.length) {
-      notesHTML = `<div class="report-card" style="margin-top:0"><div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Σημαντικές παρατηρήσεις</div><div class="note-list">`;
-      d.simantika.forEach(n => { notesHTML += `<div class="note-item"><div class="note-dot"></div><span>${n}</span></div>`; });
+      notesHTML = `<div class="report-card" style="margin-top:0">
+        <div class="card-label"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Σημαντικές παρατηρήσεις</div>
+        <div class="note-list">`;
+      d.simantika.forEach(n => {
+        notesHTML += `<div class="note-item"><div class="note-dot"></div><span>${n}</span></div>`;
+      });
       notesHTML += '</div></div>';
     }
     document.getElementById('notes-section').innerHTML = notesHTML;
+
     document.getElementById('report-wrap').style.display = 'block';
   }
 
@@ -506,54 +1048,159 @@ ${companyInfo}${dilosiPart}
     navigator.clipboard.writeText(el.textContent).catch(() => {});
     const btn = event.currentTarget;
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Αντιγράφηκε!';
-    setTimeout(() => { btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Αντιγραφή'; }, 2000);
+    setTimeout(() => {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Αντιγραφή';
+    }, 2000);
   }
 
   function sendEmail() {
     if (!reportData) return;
     const d = reportData;
     const sep = '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━';
-    let body = `📋 REPORT ΔΙΑΓΩΝΙΣΜΟΥ\n${sep}\n\n📌 ${d.titlos || '—'}\n🏛️  Αναθέτουσα: ${d.anatheton || '—'}\n💰 Προϋπολογισμός: ${d.poso || '—'}${d.poso_note ? ' (' + d.poso_note + ')' : ''}\n\n`;
+
+    let body = `📋 REPORT ΔΙΑΓΩΝΙΣΜΟΥ\n${sep}\n\n`;
+    body += `📌 ${d.titlos || '—'}\n`;
+    body += `🏛️  Αναθέτουσα: ${d.anatheton || '—'}\n`;
+    body += `💰 Προϋπολογισμός: ${d.poso || '—'}${d.poso_note ? ' (' + d.poso_note + ')' : ''}\n\n`;
+
     body += `⏰ ΣΗΜΑΝΤΙΚΕΣ ΗΜΕΡΟΜΗΝΙΕΣ\n${sep}\n`;
     if (d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ') body += `🔴 Καταληκτική υποβολής: ${d.hmerominia_lixis}\n`;
     if (d.hmerominia_anoigmatos) body += `🟡 Αποσφράγιση: ${d.hmerominia_anoigmatos}\n`;
-    if (d.alles_hmerominia && d.alles_hmerominia.length) d.alles_hmerominia.forEach(h => { body += `🔵 ${h.perigrafi}: ${h.hmerominia}\n`; });
+    if (d.alles_hmerominia && d.alles_hmerominia.length) {
+      d.alles_hmerominia.forEach(h => { body += `🔵 ${h.perigrafi}: ${h.hmerominia}\n`; });
+    }
+
     body += `\n📁 ΔΙΚΑΙΟΛΟΓΗΤΙΚΑ ΣΥΜΜΕΤΟΧΗΣ\n${sep}\n`;
-    if (d.dikaiologitika && d.dikaiologitika.length) d.dikaiologitika.forEach((dk, i) => { body += `${dk.kritiko ? '🔴' : '🔵'} ${i+1}. ${dk.onoma}${dk.simeioseis ? '\n    ↳ ' + dk.simeioseis : ''}\n`; });
+    if (d.dikaiologitika && d.dikaiologitika.length) {
+      d.dikaiologitika.forEach((dk, i) => {
+        const icon = dk.kritiko ? '🔴' : '🔵';
+        body += `${icon} ${i+1}. ${dk.onoma}${dk.simeioseis ? '\n    ↳ ' + dk.simeioseis : ''}\n`;
+      });
+    }
+
     if (d.ipefthines_diloseis && d.ipefthines_diloseis.length) {
       body += `\n✍️  ΥΠΕΥΘΥΝΕΣ ΔΗΛΩΣΕΙΣ\n${sep}\n`;
-      d.ipefthines_diloseis.forEach((id, i) => { body += `\n[ ${i+1} ] ${id.titlos}\n- - - - - - - - - - - - - - -\n${id.keimeno}\n`; });
+      d.ipefthines_diloseis.forEach((id, i) => {
+        body += `\n[ ${i+1} ] ${id.titlos}\n`;
+        body += `- - - - - - - - - - - - - - -\n`;
+        body += `${id.keimeno}\n`;
+      });
     }
-    if (d.simantika && d.simantika.length) { body += `\n⚠️  ΣΗΜΑΝΤΙΚΕΣ ΠΑΡΑΤΗΡΗΣΕΙΣ\n${sep}\n`; d.simantika.forEach(s => { body += `• ${s}\n`; }); }
+
+    if (d.simantika && d.simantika.length) {
+      body += `\n⚠️  ΣΗΜΑΝΤΙΚΕΣ ΠΑΡΑΤΗΡΗΣΕΙΣ\n${sep}\n`;
+      d.simantika.forEach(s => { body += `• ${s}\n`; });
+    }
+
     body += `\n${sep}\n🤖 Παράχθηκε από Αναλυτή Δημόσιων Διαγωνισμών`;
+
     const subject = encodeURIComponent(`📋 Report Διαγωνισμού: ${d.titlos || 'Ανάλυση'}`);
-    window.location.href = `mailto:?subject=${subject}&body=${encodeURIComponent(body)}`;
+    const mailBody = encodeURIComponent(body);
+    window.location.href = `mailto:?subject=${subject}&body=${mailBody}`;
   }
 
   function downloadReport() {
     if (!reportData) return;
     const d = reportData;
     const now = new Date().toLocaleDateString('el-GR');
+
     let docsRows = '';
     if (d.dikaiologitika && d.dikaiologitika.length) {
       d.dikaiologitika.forEach((dk, i) => {
-        const badge = dk.kritiko ? `<span style="background:#fce8e8;color:#8b2e2e;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΚΡΙΣΙΜΟ</span>` : `<span style="background:#e8eef5;color:#1e3d6b;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΤΥΠΙΚΟ</span>`;
-        docsRows += `<tr><td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px">${i+1}</td><td style="padding:10px 12px;border-bottom:1px solid #eee">${badge}</td><td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;font-weight:500">${dk.onoma}</td><td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;color:#666">${dk.simeioseis || '—'}</td></tr>`;
+        const badge = dk.kritiko
+          ? `<span style="background:#fce8e8;color:#8b2e2e;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΚΡΙΣΙΜΟ</span>`
+          : `<span style="background:#e8eef5;color:#1e3d6b;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600">ΤΥΠΙΚΟ</span>`;
+        docsRows += `<tr>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px">${i+1}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee">${badge}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:14px;font-weight:500">${dk.onoma}</td>
+          <td style="padding:10px 12px;border-bottom:1px solid #eee;font-size:13px;color:#666">${dk.simeioseis || '—'}</td>
+        </tr>`;
       });
     }
+
     let declsHTML = '';
     if (d.ipefthines_diloseis && d.ipefthines_diloseis.length) {
-      declsHTML = `<div style="margin-top:32px"><h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">✍️ Υπεύθυνες Δηλώσεις</h2>`;
-      d.ipefthines_diloseis.forEach((id, i) => { declsHTML += `<div style="margin-bottom:24px;border:1px solid #ddd;border-radius:10px;overflow:hidden"><div style="background:#2c5f3f;color:#fff;padding:10px 16px;font-size:14px;font-weight:500">${i+1}. ${id.titlos}</div><div style="padding:16px;font-family:Georgia,serif;font-size:14px;line-height:1.9;color:#1a1816;background:#fdfcfa;white-space:pre-wrap">${id.keimeno}</div></div>`; });
+      declsHTML = `<div style="margin-top:32px">
+        <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">✍️ Υπεύθυνες Δηλώσεις</h2>`;
+      d.ipefthines_diloseis.forEach((id, i) => {
+        declsHTML += `<div style="margin-bottom:24px;border:1px solid #ddd;border-radius:10px;overflow:hidden">
+          <div style="background:#2c5f3f;color:#fff;padding:10px 16px;font-size:14px;font-weight:500">${i+1}. ${id.titlos}</div>
+          <div style="padding:16px;font-family:Georgia,serif;font-size:14px;line-height:1.9;color:#1a1816;background:#fdfcfa;white-space:pre-wrap">${id.keimeno}</div>
+        </div>`;
+      });
       declsHTML += `</div>`;
     }
+
     let notesHTML = '';
     if (d.simantika && d.simantika.length) {
-      notesHTML = `<div style="margin-top:32px;background:#fff8e8;border:1px solid #e8d5a0;border-radius:10px;padding:20px"><h2 style="font-family:Georgia,serif;font-size:18px;font-weight:400;color:#7a5c1e;margin-bottom:12px">⚠️ Σημαντικές Παρατηρήσεις</h2><ul style="margin:0;padding-left:20px">`;
+      notesHTML = `<div style="margin-top:32px;background:#fff8e8;border:1px solid #e8d5a0;border-radius:10px;padding:20px">
+        <h2 style="font-family:Georgia,serif;font-size:18px;font-weight:400;color:#7a5c1e;margin-bottom:12px">⚠️ Σημαντικές Παρατηρήσεις</h2>
+        <ul style="margin:0;padding-left:20px">`;
       d.simantika.forEach(s => { notesHTML += `<li style="font-size:14px;color:#5a4010;margin-bottom:6px;line-height:1.6">${s}</li>`; });
       notesHTML += `</ul></div>`;
     }
-    const html = `<!DOCTYPE html><html lang="el"><head><meta charset="UTF-8"><title>Report: ${d.titlos || 'Διαγωνισμός'}</title></head><body style="margin:0;padding:0;background:#f5f3ee;font-family:'Segoe UI',Arial,sans-serif"><div style="max-width:800px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)"><div style="background:#2c5f3f;padding:32px 40px;color:#fff"><div style="font-size:12px;opacity:0.7;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Report Δημόσιου Διαγωνισμού • ${now}</div><h1 style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:400;line-height:1.3">${d.titlos || 'Ανάλυση Διαγωνισμού'}</h1>${d.anatheton ? `<div style="margin-top:8px;font-size:14px;opacity:0.85">🏛️ ${d.anatheton}</div>` : ''}</div><div style="padding:32px 40px"><div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px"><div style="background:#f5f3ee;border-radius:10px;padding:20px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Προϋπολογισμός</div><div style="font-family:Georgia,serif;font-size:32px;color:#2c5f3f;line-height:1">${d.poso || '—'}</div>${d.poso_note ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">${d.poso_note}</div>` : ''}</div><div style="background:#f5f3ee;border-radius:10px;padding:20px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Καταληκτική Ημερομηνία</div><div style="font-family:Georgia,serif;font-size:24px;color:#8b2e2e;line-height:1.2">${d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ' ? d.hmerominia_lixis : '—'}</div>${d.hmerominia_anoigmatos ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">Αποσφράγιση: ${d.hmerominia_anoigmatos}</div>` : ''}</div></div>${d.alles_hmerominia && d.alles_hmerominia.length ? `<div style="margin-bottom:32px;background:#eaf0f7;border-radius:10px;padding:16px 20px"><div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#1e3d6b;margin-bottom:10px">Άλλες Ημερομηνίες</div>${d.alles_hmerominia.map(h => `<div style="font-size:14px;color:#1e3d6b;padding:4px 0;border-bottom:1px solid #c5d8eb"><strong>${h.perigrafi}:</strong> ${h.hmerominia}</div>`).join('')}</div>` : ''}<h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">📁 Δικαιολογητικά Συμμετοχής</h2><table style="width:100%;border-collapse:collapse;margin-bottom:8px"><thead><tr style="background:#f5f3ee"><th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">#</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Τύπος</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Δικαιολογητικό</th><th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Σημειώσεις</th></tr></thead><tbody>${docsRows}</tbody></table>${declsHTML}${notesHTML}<div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#9e9a94;text-align:center">Παράχθηκε από Αναλυτή Δημόσιων Διαγωνισμών • ${now}</div></div></div></body></html>`;
+
+    const html = `<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Report: ${d.titlos || 'Διαγωνισμός'}</title>
+</head>
+<body style="margin:0;padding:0;background:#f5f3ee;font-family:'Segoe UI',Arial,sans-serif">
+<div style="max-width:800px;margin:40px auto;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08)">
+
+  <div style="background:#2c5f3f;padding:32px 40px;color:#fff">
+    <div style="font-size:12px;opacity:0.7;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:8px">Report Δημόσιου Διαγωνισμού • ${now}</div>
+    <h1 style="margin:0;font-family:Georgia,serif;font-size:26px;font-weight:400;line-height:1.3">${d.titlos || 'Ανάλυση Διαγωνισμού'}</h1>
+    ${d.anatheton ? `<div style="margin-top:8px;font-size:14px;opacity:0.85">🏛️ ${d.anatheton}</div>` : ''}
+  </div>
+
+  <div style="padding:32px 40px">
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px">
+      <div style="background:#f5f3ee;border-radius:10px;padding:20px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Προϋπολογισμός</div>
+        <div style="font-family:Georgia,serif;font-size:32px;color:#2c5f3f;line-height:1">${d.poso || '—'}</div>
+        ${d.poso_note ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">${d.poso_note}</div>` : ''}
+      </div>
+      <div style="background:#f5f3ee;border-radius:10px;padding:20px">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:8px">Καταληκτική Ημερομηνία</div>
+        <div style="font-family:Georgia,serif;font-size:24px;color:#8b2e2e;line-height:1.2">${d.hmerominia_lixis && d.hmerominia_lixis !== 'ΑΓΝΩΣΤΗ' ? d.hmerominia_lixis : '—'}</div>
+        ${d.hmerominia_anoigmatos ? `<div style="font-size:12px;color:#6b6760;margin-top:4px">Αποσφράγιση: ${d.hmerominia_anoigmatos}</div>` : ''}
+      </div>
+    </div>
+
+    ${d.alles_hmerominia && d.alles_hmerominia.length ? `
+    <div style="margin-bottom:32px;background:#eaf0f7;border-radius:10px;padding:16px 20px">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#1e3d6b;margin-bottom:10px">Άλλες Ημερομηνίες</div>
+      ${d.alles_hmerominia.map(h => `<div style="font-size:14px;color:#1e3d6b;padding:4px 0;border-bottom:1px solid #c5d8eb"><strong>${h.perigrafi}:</strong> ${h.hmerominia}</div>`).join('')}
+    </div>` : ''}
+
+    <h2 style="font-family:Georgia,serif;font-size:20px;font-weight:400;color:#1a1816;margin-bottom:16px;padding-bottom:8px;border-bottom:2px solid #2c5f3f">📁 Δικαιολογητικά Συμμετοχής</h2>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:8px">
+      <thead>
+        <tr style="background:#f5f3ee">
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">#</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Τύπος</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Δικαιολογητικό</th>
+          <th style="padding:10px 12px;text-align:left;font-size:12px;color:#9e9a94;font-weight:500">Σημειώσεις</th>
+        </tr>
+      </thead>
+      <tbody>${docsRows}</tbody>
+    </table>
+
+    ${declsHTML}
+    ${notesHTML}
+
+    <div style="margin-top:32px;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#9e9a94;text-align:center">
+      Παράχθηκε από Αναλυτή Δημόσιων Διαγωνισμών • ${now}
+    </div>
+  </div>
+</div>
+</body>
+</html>`;
+
     const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -568,17 +1215,114 @@ ${companyInfo}${dilosiPart}
     const d = reportData;
     const printWin = window.open('', '_blank');
     const content = document.getElementById('report-wrap').innerHTML;
-    printWin.document.write(`<!DOCTYPE html><html lang="el"><head><meta charset="UTF-8"><title>Report_${(d.anatheton || 'Διαγωνισμός').replace(/\s+/g,'-')}</title><link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"><style>body{font-family:'DM Sans',sans-serif;background:#fff;color:#1a1816;padding:2rem;max-width:900px;margin:0 auto}.report-actions{display:none!important}.report-title{font-family:'Instrument Serif',Georgia,serif;font-size:24px;font-weight:400;margin-bottom:1.5rem}.report-card{border:1px solid #ddd;border-radius:10px;padding:1rem 1.25rem;margin-bottom:1rem}.report-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}.report-card.full{grid-column:1/-1}.card-label{font-size:11px;text-transform:uppercase;letter-spacing:0.08em;color:#9e9a94;margin-bottom:0.75rem}.date-list{display:flex;flex-direction:column;gap:6px}.date-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;font-size:13px}.date-item.critical{background:#f5eaea;color:#8b2e2e}.date-item.warning{background:#f7f2e8;color:#7a5c1e}.date-item.info{background:#eaf0f7;color:#1e3d6b}.date-item-label{font-weight:500;flex:1}.budget-big{font-family:'Instrument Serif',serif;font-size:28px;color:#2c5f3f}.budget-sub{font-size:12px;color:#6b6760;margin-top:4px}.doc-list{display:flex;flex-direction:column;gap:6px}.doc-item{display:flex;gap:10px;padding:8px 10px;border:1px solid #eee;border-radius:8px;font-size:13px;background:#f9f9f9}.doc-badge{font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;flex-shrink:0;margin-top:1px}.doc-badge.critical{background:#f5eaea;color:#8b2e2e}.doc-badge.standard{background:#eaf0f7;color:#1e3d6b}.doc-name{font-weight:500}.doc-note{font-size:12px;color:#6b6760;margin-top:2px}.decl-item{border:1px solid #ddd;border-radius:10px;margin-bottom:1rem;overflow:hidden}.decl-header{background:#2c5f3f;color:#fff;padding:8px 14px;font-size:13px;font-weight:500;display:flex;justify-content:space-between}.decl-title{color:#fff}.copy-btn{display:none!important}.decl-text{padding:14px;font-family:'Instrument Serif',serif;font-size:13px;line-height:1.85;white-space:pre-wrap;background:#fdfcfa}.note-list{display:flex;flex-direction:column;gap:6px}.note-item{font-size:13px;color:#6b6760;padding:6px 0;border-bottom:1px solid #eee;display:flex;gap:8px}.note-dot{width:6px;height:6px;border-radius:50%;background:#c4bfb4;flex-shrink:0;margin-top:6px}@media print{@page{margin:1.5cm}}</style></head><body>${content}<script>window.onload=function(){window.print()}<\/script></body></html>`);
+    printWin.document.write(`<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<title>Report_${(d.anatheton || 'Διαγωνισμός').replace(/\s+/g,'-')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'DM Sans', sans-serif; background: #fff; color: #1a1816; padding: 2rem; max-width: 900px; margin: 0 auto; }
+  .report-actions { display: none !important; }
+  .report-title { font-family: 'Instrument Serif', Georgia, serif; font-size: 24px; font-weight: 400; margin-bottom: 1.5rem; }
+  .report-card { border: 1px solid #ddd; border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+  .report-card.full { grid-column: 1 / -1; }
+  .card-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: #9e9a94; margin-bottom: 0.75rem; }
+  .date-list { display: flex; flex-direction: column; gap: 6px; }
+  .date-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; font-size: 13px; }
+  .date-item.critical { background: #f5eaea; color: #8b2e2e; }
+  .date-item.warning { background: #f7f2e8; color: #7a5c1e; }
+  .date-item.info { background: #eaf0f7; color: #1e3d6b; }
+  .date-item-label { font-weight: 500; flex: 1; }
+  .budget-big { font-family: 'Instrument Serif', serif; font-size: 28px; color: #2c5f3f; }
+  .budget-sub { font-size: 12px; color: #6b6760; margin-top: 4px; }
+  .doc-list { display: flex; flex-direction: column; gap: 6px; }
+  .doc-item { display: flex; gap: 10px; padding: 8px 10px; border: 1px solid #eee; border-radius: 8px; font-size: 13px; background: #f9f9f9; }
+  .doc-badge { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 20px; flex-shrink: 0; margin-top: 1px; }
+  .doc-badge.critical { background: #f5eaea; color: #8b2e2e; }
+  .doc-badge.standard { background: #eaf0f7; color: #1e3d6b; }
+  .doc-name { font-weight: 500; }
+  .doc-note { font-size: 12px; color: #6b6760; margin-top: 2px; }
+  .decl-item { border: 1px solid #ddd; border-radius: 10px; margin-bottom: 1rem; overflow: hidden; }
+  .decl-header { background: #2c5f3f; color: #fff; padding: 8px 14px; font-size: 13px; font-weight: 500; display: flex; justify-content: space-between; }
+  .decl-title { color: #fff; }
+  .copy-btn { display: none !important; }
+  .decl-text { padding: 14px; font-family: 'Instrument Serif', serif; font-size: 13px; line-height: 1.85; white-space: pre-wrap; background: #fdfcfa; }
+  .note-list { display: flex; flex-direction: column; gap: 6px; }
+  .note-item { font-size: 13px; color: #6b6760; padding: 6px 0; border-bottom: 1px solid #eee; display: flex; gap: 8px; }
+  .note-dot { width: 6px; height: 6px; border-radius: 50%; background: #c4bfb4; flex-shrink: 0; margin-top: 6px; }
+  @media print { @page { margin: 1.5cm; } }
+</style>
+</head>
+<body>
+${content}
+<script>window.onload = function() { window.print(); }<\/script>
+</body></html>`);
     printWin.document.close();
+  }
+
+  function openOutlookDeepLink() {
+    if (!reportData) return;
+    const d = reportData;
+
+    const rawDate = d.hmerominia_lixis;
+    const parts = rawDate && rawDate !== 'ΑΓΝΩΣΤΗ'
+      ? rawDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/)
+      : null;
+
+    let startdt, enddt;
+
+    if (!parts) {
+      const sxetiki = d.hmerominia_lixis_sxetiki
+        ? `\n(Στη διακήρυξη αναφέρεται: "${d.hmerominia_lixis_sxetiki}")`
+        : '';
+      const manualDate = prompt(`Δεν βρέθηκε συγκεκριμένη ημερομηνία.${sxetiki}\n\nΒάλε την καταληκτική ημερομηνία (μορφή ΗΗ/ΜΜ/ΕΕΕΕ):`);
+      if (!manualDate) return;
+      const manualParts = manualDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
+      if (!manualParts) { alert('Μη έγκυρη μορφή. Χρησιμοποίησε ΗΗ/ΜΜ/ΕΕΕΕ (π.χ. 15/06/2026)'); return; }
+      const d2 = manualParts[1].padStart(2,'0');
+      const m2 = manualParts[2].padStart(2,'0');
+      const y2 = manualParts[3];
+      startdt = `${y2}-${m2}-${d2}`;
+      const end = new Date(`${y2}-${m2}-${d2}`);
+      end.setDate(end.getDate() + 1);
+      enddt = `${end.getFullYear()}-${String(end.getMonth()+1).padStart(2,'0')}-${String(end.getDate()).padStart(2,'0')}`;
+    } else {
+      const day = parts[1].padStart(2,'0');
+      const month = parts[2].padStart(2,'0');
+      const year = parts[3];
+      startdt = `${year}-${month}-${day}`;
+      const end = new Date(`${year}-${month}-${day}`);
+      end.setDate(end.getDate() + 1);
+      enddt = `${end.getFullYear()}-${String(end.getMonth()+1).padStart(2,'0')}-${String(end.getDate()).padStart(2,'0')}`;
+    }
+
+    const subject = encodeURIComponent(`⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`);
+    const body = encodeURIComponent([
+      `Αναθέτουσα: ${d.anatheton || '—'}`,
+      `Προϋπολογισμός: ${d.poso || '—'}`,
+      d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''
+    ].filter(Boolean).join('\n'));
+
+    const url = `https://outlook.office.com/calendar/action/compose?subject=${subject}&startdt=${startdt}&enddt=${enddt}&body=${body}&allday=true`;
+    window.open(url, '_blank');
   }
 
   function downloadICS() {
     if (!reportData) return;
     const d = reportData;
+
     const rawDate = d.hmerominia_lixis;
-    const parts = rawDate && rawDate !== 'ΑΓΝΩΣΤΗ' ? rawDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/) : null;
+    const parts = rawDate && rawDate !== 'ΑΓΝΩΣΤΗ'
+      ? rawDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/)
+      : null;
+
     if (!parts) {
-      const sxetiki = d.hmerominia_lixis_sxetiki ? `\n(Στη διακήρυξη αναφέρεται: "${d.hmerominia_lixis_sxetiki}")` : '';
+      // Εμφάνισε popup για χειροκίνητη εισαγωγή
+      const sxetiki = d.hmerominia_lixis_sxetiki
+        ? `\n(Στη διακήρυξη αναφέρεται: "${d.hmerominia_lixis_sxetiki}")`
+        : '';
       const manualDate = prompt(`Δεν βρέθηκε συγκεκριμένη ημερομηνία.${sxetiki}\n\nΒάλε την καταληκτική ημερομηνία (μορφή ΗΗ/ΜΜ/ΕΕΕΕ):`);
       if (!manualDate) return;
       const manualParts = manualDate.match(/(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})/);
@@ -595,38 +1339,81 @@ ${companyInfo}${dilosiPart}
     const year = parts[3];
     const now = new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
     const uid = `diagonismos-${Date.now()}@agent`;
+
+    // Εξαγωγή ώρας από το hmerominia_lixis αν υπάρχει (π.χ. "15:00")
     const timeMatch = d.hmerominia_lixis ? d.hmerominia_lixis.match(/(\d{1,2}):(\d{2})/) : null;
-    let endHour = timeMatch ? parseInt(timeMatch[1]) : 17;
-    let endMin = timeMatch ? parseInt(timeMatch[2]) : 0;
-    let startHour = endHour - 1;
-    let startMin = endMin;
+    let endHour, endMin, startHour, startMin;
+
+    if (timeMatch) {
+      endHour = parseInt(timeMatch[1]);
+      endMin = parseInt(timeMatch[2]);
+    } else {
+      // Αν δεν υπάρχει ώρα → 17:00 ως λήξη
+      endHour = 17;
+      endMin = 0;
+    }
+
+    // Μία ώρα πριν = έναρξη
+    startHour = endHour - 1;
+    startMin = endMin;
     if (startHour < 0) { startHour = 0; startMin = 0; }
+
+    const startHourStr = String(startHour).padStart(2,'0');
+    const startMinStr = String(startMin).padStart(2,'0');
+    const endHourStr = String(endHour).padStart(2,'0');
+    const endMinStr = String(endMin).padStart(2,'0');
+
     const dateStr = `${year}${month}${day}`;
-    const startDT = `${dateStr}T${String(startHour).padStart(2,'0')}${String(startMin).padStart(2,'0')}00`;
-    const endDT = `${dateStr}T${String(endHour).padStart(2,'0')}${String(endMin).padStart(2,'0')}00`;
-    const desc = [`Αναθέτουσα: ${d.anatheton || '—'}`, `Προϋπολογισμός: ${d.poso || '—'}`, d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''].filter(Boolean).join('\\n');
+    const startDT = `${dateStr}T${startHourStr}${startMinStr}00`;
+    const endDT = `${dateStr}T${endHourStr}${endMinStr}00`;
+
+    const desc = [
+      `Αναθέτουσα: ${d.anatheton || '—'}`,
+      `Προϋπολογισμός: ${d.poso || '—'}`,
+      d.hmerominia_lixis_sxetiki ? `Προθεσμία: ${d.hmerominia_lixis_sxetiki}` : ''
+    ].filter(Boolean).join('\\n');
+
     const icsLines = [
-      'BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//DiagonismosAgent//GR','CALSCALE:GREGORIAN','METHOD:PUBLISH',
-      'BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${now}`,
-      `DTSTART;TZID=Europe/Athens:${startDT}`,`DTEND;TZID=Europe/Athens:${endDT}`,
-      `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'} — ${(d.titlos || '').substring(0,50)}`,
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//DiagonismosAgent//GR',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      `UID:${uid}`,
+      `DTSTAMP:${now}`,
+      `DTSTART;TZID=Europe/Athens:${startDT}`,
+      `DTEND;TZID=Europe/Athens:${endDT}`,
+      `SUMMARY:⏰ Λήξη: ${d.anatheton || 'Διαγωνισμός'}`,
       `DESCRIPTION:${desc}`,
-      'BEGIN:VALARM','TRIGGER:-P2D','ACTION:DISPLAY',`DESCRIPTION:⏰ 2 μέρες πριν τη λήξη: ${d.anatheton || ''}`, 'END:VALARM',
-      'BEGIN:VALARM','TRIGGER:-P1D','ACTION:DISPLAY',`DESCRIPTION:⏰ ΑΥΡΙΟ λήγει: ${d.anatheton || ''}`, 'END:VALARM',
-      'END:VEVENT','END:VCALENDAR'
-    ];
+      'BEGIN:VALARM',
+      'TRIGGER:-P2D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:⏰ 2 μέρες πριν τη λήξη: ${d.anatheton || ''}`,
+      'END:VALARM',
+      'BEGIN:VALARM',
+      'TRIGGER:-P1D',
+      'ACTION:DISPLAY',
+      `DESCRIPTION:⏰ ΑΥΡΙΟ λήγει: ${d.anatheton || ''}`,
+      'END:VALARM',
+      'END:VEVENT',
+      'END:VCALENDAR'
+    ].filter(Boolean);
+
     const ics = icsLines.join('\r\n');
     const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `Report_${(d.anatheton || 'Διαγωνισμός').substring(0,25).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}_${(d.titlos || '').substring(0,25).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}.ics`;
+    a.download = `Report_${(d.anatheton || 'Διαγωνισμός').substring(0,30).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}.ics`;
     a.click();
     URL.revokeObjectURL(url);
   }
 
   function resetApp() {
-    files.diakirixi = null; files.dilosi = null; reportData = null;
+    files.diakirixi = null;
+    files.dilosi = null;
+    reportData = null;
     document.getElementById('file-diakirixi').value = '';
     document.getElementById('file-dilosi').value = '';
     document.getElementById('name-diakirixi').textContent = '';
