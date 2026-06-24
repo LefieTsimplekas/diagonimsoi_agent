@@ -7,24 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<script>
-(function() {
-  const cdns = [
-    'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.js',
-    'https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/index.js',
-    'https://unpkg.com/docx@8.5.0/build/index.js'
-  ];
-  let idx = 0;
-  function tryLoad() {
-    if (idx >= cdns.length) return;
-    const s = document.createElement('script');
-    s.src = cdns[idx++];
-    s.onerror = tryLoad;
-    document.head.appendChild(s);
-  }
-  tryLoad();
-})();
-</script>
+
 
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -312,7 +295,6 @@
     <div class="report-grid" id="report-grid"></div>
     <div id="decl-section"></div>
     <div id="notes-section"></div>
-    <div id="para-section"></div>
   </div>
 
 </div>
@@ -422,14 +404,6 @@ ${companyInfo}${dilosiPart}
   "alles_hmerominia": [{ "perigrafi": "περιγραφή", "hmerominia": "ημερομηνία" }],
   "dikaiologitika": [{ "onoma": "όνομα εγγράφου", "kritiko": true/false, "simeioseis": "σχόλιο ή null" }],
   "ipefthines_diloseis": [{ "titlos": "τίτλος δήλωσης", "keimeno": "πλήρες κείμενο" }],
-  "paratimata": [
-    {
-      "titlos": "τίτλος παραρτήματος (π.χ. 'ΠΑΡΑΡΤΗΜΑ Α - Οικονομική Προσφορά')",
-      "typos": "OIKONOMIKI | YPEUTHINI_DILOSI | TEXNIKI | ALLO",
-      "perigrafi": "σύντομη περιγραφή τι περιέχει",
-      "keimeno": "πλήρες κείμενο/περιεχόμενο του παραρτήματος όπως ζητείται — με κενά για συμπλήρωση όπου χρειάζεται (π.χ. '..................' για υπογραφή, '[ΠΟΣΟ]' για τιμές κ.λπ.)"
-    }
-  ],
   "simantika": ["παρατηρήσεις"]
 }
 
@@ -441,9 +415,7 @@ ${companyInfo}${dilosiPart}
 Ως νόμιμος εκπρόσωπος της εταιρείας [ΕΠΩΝΥΜΙΑ] δηλώνω ότι:"
 
 Αντικατέστησε [ΕΠΩΝΥΜΙΑ] με την επωνυμία αν δόθηκε, αλλιώς "……………".
-Αν δεν ζητούνται υπεύθυνες δηλώσεις, βάλε κενό array.
-
-Για τα παραρτήματα ("paratimata"): Εντόπισε ΟΛΕΣ τις φόρμες/έντυπα/παραρτήματα που ζητάει η διακήρυξη να υποβληθούν (οικονομική προσφορά, τεχνική προσφορά, υπεύθυνες δηλώσεις ως παραρτήματα, πίνακες κ.λπ.). Για κάθε ένα, αναπαρήγαγε το πλήρες κείμενο/περιεχόμενο όπως εμφανίζεται στη διακήρυξη, με όλα τα πεδία και τα κενά για συμπλήρωση. Αν δεν υπάρχουν παραρτήματα, βάλε κενό array.`;
+Αν δεν ζητούνται υπεύθυνες δηλώσεις, βάλε κενό array.`;
 
       setProgress(3);
       const parts = [{ inlineData: { mimeType: mime, data: b64 } }, { text: prompt }];
@@ -515,34 +487,6 @@ ${companyInfo}${dilosiPart}
       notesHTML += '</div></div>';
     }
     document.getElementById('notes-section').innerHTML = notesHTML;
-
-    // Παραρτήματα
-    let paraHTML = '';
-    if (d.paratimata && d.paratimata.length) {
-      paraHTML = `<div class="report-card full" style="margin-top:0">
-        <div class="card-label">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
-          Παραρτήματα (${d.paratimata.length})
-        </div>`;
-      d.paratimata.forEach((p, i) => {
-        const typeLabel = p.typos === 'OIKONOMIKI' ? '💰 Οικονομική' : p.typos === 'YPEUTHINI_DILOSI' ? '✍️ Υπεύθυνη Δήλωση' : p.typos === 'TEXNIKI' ? '📋 Τεχνική' : '📄 Άλλο';
-        paraHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-bottom:0.75rem;background:var(--bg)">
-          <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem">
-            <div>
-              <div style="font-weight:500;font-size:14px;color:var(--text)">${p.titlos}</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:3px">${typeLabel}${p.perigrafi ? ' — ' + p.perigrafi : ''}</div>
-            </div>
-            <button class="action-btn" onclick="downloadParartima(${i})" style="flex-shrink:0;white-space:nowrap">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Λήψη Word
-            </button>
-          </div>
-        </div>`;
-      });
-      paraHTML += `</div>`;
-    }
-    document.getElementById('para-section').innerHTML = paraHTML;
-
     document.getElementById('report-wrap').style.display = 'block';
   }
 
@@ -670,90 +614,6 @@ ${companyInfo}${dilosiPart}
     URL.revokeObjectURL(url);
   }
 
-  async function downloadParartima(i) {
-    if (!reportData || !reportData.paratimata || !reportData.paratimata[i]) return;
-    const d = reportData;
-    const p = d.paratimata[i];
-
-    // Περιμένουμε να φορτώσει η βιβλιοθήκη docx
-    let waited = 0;
-    while (typeof docx === 'undefined' && waited < 5000) {
-      await new Promise(r => setTimeout(r, 200));
-      waited += 200;
-    }
-
-    if (typeof docx === 'undefined') {
-      alert('Η βιβλιοθήκη Word δεν φόρτωσε. Ανανέωσε τη σελίδα και δοκίμασε ξανά.');
-      return;
-    }
-
-    const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType, BorderStyle, Table, TableRow, TableCell, WidthType } = docx;
-
-    // Σπάμε το κείμενο σε γραμμές
-    const lines = (p.keimeno || '').split('\n');
-
-    const children = [
-      new Paragraph({
-        text: p.titlos,
-        heading: HeadingLevel.HEADING_1,
-        alignment: AlignmentType.CENTER,
-        spacing: { after: 400 }
-      }),
-    ];
-
-    if (d.anatheton) {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: `Αναθέτουσα Αρχή: ${d.anatheton}`, bold: true, size: 22 })],
-        spacing: { after: 200 }
-      }));
-    }
-
-    if (p.perigrafi) {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: p.perigrafi, italics: true, color: '666666', size: 20 })],
-        spacing: { after: 400 }
-      }));
-    }
-
-    // Γραμμή διαχωρισμού
-    children.push(new Paragraph({
-      border: { bottom: { color: '2C5F3F', size: 6, style: BorderStyle.SINGLE } },
-      spacing: { after: 400 }
-    }));
-
-    // Κείμενο παραρτήματος
-    lines.forEach(line => {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: line, size: 22, font: 'Calibri' })],
-        spacing: { after: 120 }
-      }));
-    });
-
-    // Χώρος υπογραφής στο τέλος
-    children.push(new Paragraph({ text: '', spacing: { before: 800 } }));
-    children.push(new Paragraph({
-      children: [new TextRun({ text: 'Ημερομηνία: _______________          Υπογραφή & Σφραγίδα: ___________________________', size: 22 })],
-      spacing: { before: 200 }
-    }));
-
-    const doc = new Document({
-      sections: [{
-        properties: {
-          page: { margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } }
-        },
-        children
-      }]
-    });
-
-    const blob = await Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${p.titlos.substring(0,50).replace(/\s+/g,'-').replace(/[/\\:*?"<>|]/g,'')}.docx`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
   function resetApp() {
     files.diakirixi = null; files.dilosi = null; reportData = null;
     document.getElementById('file-diakirixi').value = '';
@@ -764,7 +624,6 @@ ${companyInfo}${dilosiPart}
     document.getElementById('zone-dilosi').classList.remove('has-file');
     document.getElementById('error-wrap').innerHTML = '';
     document.getElementById('report-wrap').style.display = 'none';
-    document.getElementById('para-section').innerHTML = '';
     document.getElementById('input-section').style.display = 'block';
     document.getElementById('run-btn').disabled = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
