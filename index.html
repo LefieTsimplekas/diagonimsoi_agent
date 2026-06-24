@@ -427,6 +427,17 @@ ${companyInfo}${dilosiPart}
       if (!res.ok) { const err = await res.json(); throw new Error(err.error?.message || `HTTP ${res.status}`); }
       const data = await res.json();
       let raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+      // Debug — αν είναι κενό εμφάνισε λεπτομέρειες
+      if (!raw || raw.trim() === '') {
+        const debugInfo = JSON.stringify({
+          finishReason: data.candidates?.[0]?.finishReason,
+          promptFeedback: data.promptFeedback,
+          candidatesCount: data.candidates?.length
+        }, null, 2);
+        throw new Error(`Κενή απάντηση από AI. Debug: ${debugInfo}`);
+      }
+
       raw = raw.replace(/```json|```/g, '').trim();
       const firstBrace = raw.indexOf('{');
       const lastBrace = raw.lastIndexOf('}');
